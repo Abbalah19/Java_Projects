@@ -1,32 +1,32 @@
 package com.Pace.SicCheck.models;
 
 public class ICP2_SIC {
-    private double Ag_trigger = 100.0;
+    private double Ag_trigger = 5.0;
     private double Al_trigger = 500.0;
     private double As_trigger = 100.0;
-    private double B_trigger = 200.0;
+    private double B_trigger = 50.0;
     private double Ba_trigger = 100.0;
-    private double Be_trigger = 100.0;
-    private double Ca_trigger = 100.0;
-    private double Cd_trigger = 100.0;
+    private double Be_trigger = 50.0;
+    private double Ca_trigger = 500.0;
+    private double Cd_trigger = 50.0;
     private double Co_trigger = 100.0;
     private double Cr_trigger = 100.0;
     private double Cu_trigger = 100.0;
-    private double Fe_trigger = 100.0;
-    private double K_trigger = 100.0;
-    private double Mg_trigger = 100.0;
+    private double Fe_trigger = 500.0;
+    private double K_trigger = 500.0;
+    private double Mg_trigger = 200.0;
     private double Mn_trigger = 100.0;
     private double Mo_trigger = 100.0;
-    private double Na_trigger = 100.0;
+    private double Na_trigger = 500.0;
     private double Ni_trigger = 100.0;
     private double Pb_trigger = 100.0;
     private double Sb_trigger = 100.0;
-    private double Se_trigger = 100.0;
-    private double Sn_trigger = 100.0;
+    private double Se_trigger = 200.0;
+    private double Sn_trigger = 10.0;
     private double Ti_trigger = 100.0;
     private double Tl_trigger = 100.0;
     private double V_trigger = 100.0;
-    private double Zn_trigger = 100.0;
+    private double Zn_trigger = 20.0;
     private double Zr_trigger = 100.0;
     private String message = " ";
 
@@ -140,7 +140,7 @@ public class ICP2_SIC {
             case "Ni":
                 if (measuredValue > Ni_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ni SIC Interferes with: Cd, Co Pb )";
+                    interferenceMessage = "( Ni SIC Interferes with: Cd, Co, Pb )";
                 }
                 break;
             case "Pb":

@@ -67,7 +67,7 @@ public class Main {
                 String sampleResultString = sampleName + "  " + instrumentID + "  " + date + " " + time + " ";
 
                 if (instrumentID == null && "Zr".equals(analyteName)) {
-                    pw.println(sampleName + " ICP " + date + " " + time + " ");
+                    pw.println(sampleName + " ICP " + date + " " + time + "\n");
                     continue;
                 }
 
@@ -76,9 +76,21 @@ public class Main {
                     sampleResultString += icp2.getMessage() + " ";
                 }
 
+                if ("ICP3".equals(instrumentID)) {
+                    icp3.checkAndBuildMessage(analyteName, reportedConc);
+                    sampleResultString += icp3.getMessage() + " ";
+                }
+
+                if ("ICP4".equals(instrumentID)) {
+                    icp4.checkAndBuildMessage(analyteName, reportedConc);
+                    sampleResultString += icp4.getMessage() + " ";
+                }
+
                 if ("Zr".equals(analyteName)) {
-                    pw.println(sampleResultString);
+                    pw.println(sampleResultString + "\n");
                     icp2.setMessage(" "); // Reset the message to default
+                    icp3.setMessage(" ");
+                    icp4.setMessage(" ");
                 }
             }
         } catch (IOException e) {

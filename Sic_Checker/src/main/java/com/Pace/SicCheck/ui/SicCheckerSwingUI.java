@@ -1,9 +1,7 @@
 package com.Pace.SicCheck.ui;
 
 import javax.swing.*;
-
 import com.Pace.SicCheck.Main.Main;
-
 import java.awt.*;
 import java.io.File;
 
@@ -43,14 +41,8 @@ public class SicCheckerSwingUI extends JFrame {
             // Disable the "All files" option.
             fileChooser.setAcceptAllFileFilterUsed(false);
 
-            // Step 3: Open the file chooser dialog
             if (fileChooser.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 File selectedDirectory = fileChooser.getSelectedFile();
-
-                // Step 4: Here you can use the selected directory path to save a file
-                // For demonstration, let's just print the selected directory path
-                // System.out.println("Selected directory: " +
-                // selectedDirectory.getAbsolutePath());
                 resultFilePathField.setText(selectedDirectory.getAbsolutePath());
                 setOutputFilePath(selectedDirectory.getAbsolutePath());
             }
@@ -60,7 +52,7 @@ public class SicCheckerSwingUI extends JFrame {
         JButton aboutButton = new JButton("About");
         aboutButton.addActionListener(e -> {
             // Display an about dialog or information
-            JOptionPane.showMessageDialog(frame, "SIC Checker v1.0\n .", "About",
+            JOptionPane.showMessageDialog(frame, aboutMsg(), "About",
                     JOptionPane.INFORMATION_MESSAGE);
         });
 
@@ -74,8 +66,9 @@ public class SicCheckerSwingUI extends JFrame {
         JButton dataCheckButton = new JButton("Check Data");
         dataCheckButton.addActionListener(e -> {
             String inputFilePath = getInputFilePath(); // Assuming you have a getter for the input file path
-            String outputFilePath = getOutputFilePath() + ".txt"; // Assuming you have a getter for the output directory
-                                                                  // path
+            String outputFilePath = getOutputFilePath() + "X.txt"; // Assuming you have a getter for the output
+                                                                   // directory
+                                                                   // path
             Main.processFile(inputFilePath, outputFilePath); // Call the static method in Main
             JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
                     JOptionPane.INFORMATION_MESSAGE);
@@ -124,5 +117,20 @@ public class SicCheckerSwingUI extends JFrame {
 
     public String getOutputFilePath() {
         return outputFilePath;
+    }
+
+    private String aboutMsg() {
+        return "SIC Checker v1.0\n\n" +
+                "This is a simple test program. Designed to check ICP Data for being over the IEC limits.\n" +
+                "It is only designed to work against the current Data Manager output format and will break\n" +
+                "if the format changes. It is also only made to work with prn files, though it should be able\n" +
+                "to handle a csv or txt format. It will add an X to your file output name, this is becuase I am\n" +
+                "lazy and didn't want to add null/empty field catch statements.\n" +
+                "As a test program, it is not designed to be user friendly, and will not handle errors well.\n" +
+                "It is also not designed to be efficient, and will be slow with large files.\n" +
+                "It is also not designed to be robust, and will break if the input file is not as expected.\n" +
+                "It is also not fully edited, and will have spelling/numerical errors.\n\n" +
+                "IT IS POSSIBLE TO OVERWRITE FILES WITH THIS PROGRAM, BE CAREFUL SELECTING A SAVE FILE\n" +
+                "THIS IS NOT A REPLACEMENT FOR A PROPERRLY TRAINED ANALYST\n\n";
     }
 }
