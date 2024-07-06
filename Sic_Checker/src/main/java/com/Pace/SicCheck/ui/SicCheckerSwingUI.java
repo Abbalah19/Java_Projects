@@ -1,9 +1,9 @@
 package com.Pace.SicCheck.ui;
 
 import javax.swing.*;
-import com.Pace.SicCheck.Main.Main;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class SicCheckerSwingUI extends JFrame {
     private String inputFilePath;
@@ -65,13 +65,16 @@ public class SicCheckerSwingUI extends JFrame {
 
         JButton dataCheckButton = new JButton("Check Data");
         dataCheckButton.addActionListener(e -> {
-            String inputFilePath = getInputFilePath(); // Assuming you have a getter for the input file path
-            String outputFilePath = getOutputFilePath() + "X.txt"; // Assuming you have a getter for the output
-                                                                   // directory
-                                                                   // path
-            Main.processFile(inputFilePath, outputFilePath); // Call the static method in Main
-            JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
-                    JOptionPane.INFORMATION_MESSAGE);
+            try {
+                Process process = Runtime.getRuntime().exec("java -cp bin com.Pace.SicCheck.Main");
+                process.waitFor();
+                JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
         });
 
         // Create panels with FlowLayout for each row
