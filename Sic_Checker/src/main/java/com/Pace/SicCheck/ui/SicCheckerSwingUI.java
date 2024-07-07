@@ -1,9 +1,8 @@
 package com.Pace.SicCheck.ui;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.IOException;
+import javax.swing.*;
 
 public class SicCheckerSwingUI extends JFrame {
     private String inputFilePath;
@@ -65,16 +64,16 @@ public class SicCheckerSwingUI extends JFrame {
 
         JButton dataCheckButton = new JButton("Check Data");
         dataCheckButton.addActionListener(e -> {
-            try {
-                Process process = Runtime.getRuntime().exec("java -cp bin com.Pace.SicCheck.Main");
-                process.waitFor();
-                JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
-                        JOptionPane.INFORMATION_MESSAGE);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+
+            /* 
+             * This fucking line, Gradle did some sort of magic refactoring bullshit that took 4 hours to trace
+             * back to. I don't know why, I don't care why but the code compiles whiouth errors now.
+             */
+            com.Pace.SicCheck.Main.Main.processFile(getInputFilePath(), getOutputFilePath()+"X.txt");
+
+            JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
+                    JOptionPane.INFORMATION_MESSAGE);
+
         });
 
         // Create panels with FlowLayout for each row

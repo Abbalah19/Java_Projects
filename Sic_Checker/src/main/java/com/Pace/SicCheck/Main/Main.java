@@ -49,6 +49,10 @@ public class Main {
             e.printStackTrace();
         }
 
+        for (Measurement measurement : measurements) {
+            System.out.println(measurement.toString());
+        }
+
         ICP2_SIC icp2 = new ICP2_SIC();
         ICP3_SIC icp3 = new ICP3_SIC();
         ICP4_SIC icp4 = new ICP4_SIC();
@@ -87,6 +91,7 @@ public class Main {
                 }
 
                 if ("Zr".equals(analyteName)) {
+                    System.out.println(sampleResultString + "\n");
                     pw.println(sampleResultString + "\n");
                     icp2.setMessage(" "); // Reset the message to default
                     icp3.setMessage(" ");
