@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'com.Pace.SicCheck'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Example dependency: 'group:name:version'
+    // testImplementation 'junit:junit:4.13.2'
+}
+
+application {
+    // Replace with your project's main class
+    mainClassName = 'com.Pace.SicCheck.Main.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.Pace.SicCheck.Main.Main'
+        )
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.Pace.SicCheck.Main.Main'
+    }
+    archiveBaseName = project.name + '-all'
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
