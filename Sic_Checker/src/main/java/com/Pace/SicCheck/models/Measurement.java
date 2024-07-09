@@ -1,12 +1,12 @@
 package com.Pace.SicCheck.models;
 
 public class Measurement {
-    private String sampleId;
-    private String instrumentID;
-    private String date;
-    private String time;
-    private String analyteName;
-    private double reportedConc;
+    final private String sampleId;
+    final private String instrumentID;
+    final private String date;
+    final private String time;
+    final private String analyteName;
+    final private double reportedConc;
 
     public Measurement(String sampleId, String instrumentID, String date, String time, String analyteName,
             double reportedConc) {

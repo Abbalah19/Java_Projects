@@ -15,6 +15,7 @@ import com.Pace.SicCheck.models.Measurement;
 
 import javax.swing.SwingUtilities;
 
+import com.Pace.SicCheck.models.CCV;
 import com.Pace.SicCheck.models.StringHelper;
 import com.Pace.SicCheck.ui.SicCheckerSwingUI;
 
@@ -59,6 +60,7 @@ public class Main {
         ICP2_SIC icp2 = new ICP2_SIC();
         ICP3_SIC icp3 = new ICP3_SIC();
         ICP4_SIC icp4 = new ICP4_SIC();
+        CCV CCV = new CCV();
 
         try (FileWriter fw = new FileWriter(outputFilePath, true);
                 PrintWriter pw = new PrintWriter(fw)) {
@@ -73,9 +75,9 @@ public class Main {
 
                 String sampleBreak = new StringHelper().getSampleBreak();
                 String seperator = new StringHelper().getSeperator();
-                String footer = new StringHelper().getFooter();
+                //String footer = new StringHelper().getFooter();
 
-                String sampleResultString = "";
+                String sicMsg = "";
 
                 if (instrumentID == null && "Ag".equals(analyteName)) {
                     pw.println(sampleBreak);
@@ -83,39 +85,30 @@ public class Main {
                     continue;
                 }
 
-                if ("ICP2".equals(instrumentID)) {
-                    if ("Ag".equals(analyteName)) {
-                        pw.println(sampleBreak);
-                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
-                    }
-                    icp2.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp2.getMessage();
+                if ("Ag".equals(analyteName)) {
+                    pw.println(sampleBreak);
+                    pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
                 }
-
-                if ("ICP3".equals(instrumentID)) {
-                    if ("Ag".equals(analyteName)) {
-                        pw.println(sampleBreak);
-                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
-                    }
+                    
+                if ("ICP2".equals(instrumentID)){
+                icp2.checkAndBuildMessage(analyteName, reportedConc);
+                sicMsg += icp2.getMessage();
+                }
+                if ("ICP3".equals(instrumentID)){
                     icp3.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp3.getMessage();
+                    sicMsg += icp3.getMessage();
                 }
-
-                if ("ICP4".equals(instrumentID)) {
-                    if ("Ag".equals(analyteName)) {
-                        pw.println(sampleBreak);
-                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
-                    }
+                if ("ICP4".equals(instrumentID)){
                     icp4.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp4.getMessage();
+                    sicMsg += icp4.getMessage();
                 }
-
+            
                 if ("Zr".equals(analyteName)) {
-                    if(!sampleResultString.isEmpty()){
+                    if(!sicMsg.isEmpty()){
                         pw.println(seperator);
-                        pw.println("~ Possible Interferences ~\n" + sampleResultString);
+                        pw.println("~ Possible Interferences ~\n" + sicMsg);
                     }
-                    resetICPMessage(pw, icp2, icp3, icp4);
+                    resetICPMessage(pw, icp2, icp3, icp4, CCV);
                 }
             }
         } catch (IOException e) {
@@ -123,12 +116,13 @@ public class Main {
         }
     }
 
-    public static void resetICPMessage(PrintWriter pw, ICP2_SIC icp2, ICP3_SIC icp3, ICP4_SIC icp4) {
+    public static void resetICPMessage(PrintWriter pw, ICP2_SIC icp2, ICP3_SIC icp3, ICP4_SIC icp4, CCV CCV) {
         String footer = new StringHelper().getFooter();
         icp2.setMessage(""); // Reset the message to default
         icp2.setMessage(""); // Reset the message to default
         icp3.setMessage("");
         icp4.setMessage("");
+        CCV.setMessage("");
         pw.println(footer + "\n");
     }
 
