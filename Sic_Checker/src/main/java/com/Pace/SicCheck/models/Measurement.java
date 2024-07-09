@@ -42,8 +42,10 @@ public class Measurement {
         return reportedConc;
     }
 
-    // getters and setters
-    // ...
+    public Measurement getMeasurement(){
+        return this;
+    }
+
     @Override
     public String toString() {
         return "Measurement{" +

@@ -38,163 +38,163 @@ public class ICP3_SIC {
             case "Ag":
                 if (measuredValue > Ag_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ag SIC Interferes with: Zn. ) ";
+                    interferenceMessage = "( Ag SIC Interferes with: Zn. )\n";
                 }
                 break;
             case "Al":
                 if (measuredValue > Al_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Al SIC Interferes with: Fe, Pb, Se, Tl, Zn ) ";
+                    interferenceMessage = "( Al SIC Interferes with: Fe, Pb, Se, Tl, Zn )\n";
                 }
                 break;
             case "As":
                 if (measuredValue > As_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( As SIC Interferes with: Cd, Tl ) ";
+                    interferenceMessage = "( As SIC Interferes with: Cd, Tl )\n";
                 }
                 break;
             case "B":
                 if (measuredValue > B_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( B SIC Interferes with: As, Tl ) ";
+                    interferenceMessage = "( B SIC Interferes with: As, Tl )\n";
                 }
                 break;
             case "Ba":
                 if (measuredValue > Ba_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ba SIC Interferes with: As, Co, Tl ) ";
+                    interferenceMessage = "( Ba SIC Interferes with: As, Co, Tl )\n";
                 }
                 break;
             case "Be":
                 if (measuredValue > Be_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Be SIC Interferes with: N/A ) ";
+                    interferenceMessage = "( Be SIC Interferes with: N/A )\n";
                 }
                 break;
             case "Ca":
                 if (measuredValue > Ca_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ca SIC Interferes with: Al, Mg, Mo, Pb, Se, Sn, Tl ) ";
+                    interferenceMessage = "( Ca SIC Interferes with: Al, Mg, Mo, Pb, Se, Sn, Tl )\n";
                 }
                 break;
             case "Cd":
                 if (measuredValue > Cd_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Cd SIC Interferes with: Tl ) ";
+                    interferenceMessage = "( Cd SIC Interferes with: Tl )\n";
                 }
                 break;
             case "Co":
                 if (measuredValue > Co_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Co SIC Interferes with: Al, As, Cd, Cu, Fe, Ni, Pb, Se ) ";
+                    interferenceMessage = "( Co SIC Interferes with: Al, As, Cd, Cu, Fe, Ni, Pb, Se )\n";
                 }
                 break;
             case "Cr":
                 if (measuredValue > Cr_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Cr SIC Interferes with: As, Co, Mo, Pb, Sb, Tl, V, Zn )";
+                    interferenceMessage = "( Cr SIC Interferes with: As, Co, Mo, Pb, Sb, Tl, V, Zn )\n";
                 }
                 break;
             case "Cu":
                 if (measuredValue > Cu_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Cu SIC Interferes with: Pb ) ";
+                    interferenceMessage = "( Cu SIC Interferes with: Pb )\n";
                 }
                 break;
             case "Fe":
                 if (measuredValue > Fe_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Fe SIC Interferes with: Ag, Al, As, Ba, Ca, Cr, Cu, Mg, Mn, Mo, Pb, Sb, Se, Tl, V, Zn ) ";
+                    interferenceMessage = "( Fe SIC Interferes with: Ag, Al, As, Ba, Ca, Cr, Cu, Mg, Mn, Mo, Pb, Sb, Se, Tl, V, Zn )\n";
                 }
                 break;
             case "K":
                 if (measuredValue > K_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( K SIC Interferes with: N/A) ";
+                    interferenceMessage = "( K SIC Interferes with: N/A)\n";
                 }
                 break;
             case "Mg":
                 if (measuredValue > Mg_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Mg SIC Interferes with: Sn, V ) ";
+                    interferenceMessage = "( Mg SIC Interferes with: Sn, V )\n";
                 }
                 break;
             case "Mn":
                 if (measuredValue > Mn_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Mn SIC Interferes with: Ag, As, Cr, Ni, Pb, Se ) ";
+                    interferenceMessage = "( Mn SIC Interferes with: Ag, As, Cr, Ni, Pb, Se )\n";
                 }
                 break;
             case "Mo":
                 if (measuredValue > Mo_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Mo SIC Interferes with: Al, As, B, Be, Co, Ni, Pb, Sb, V ) ";
+                    interferenceMessage = "( Mo SIC Interferes with: Al, As, B, Be, Co, Ni, Pb, Sb, V )\n";
                 }
                 break;
             case "Na":
                 if (measuredValue > Na_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Na SIC Interferes with: Zn ) ";
+                    interferenceMessage = "( Na SIC Interferes with: Zn )\n";
                 }
                 break;
             case "Ni":
                 if (measuredValue > Ni_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ni SIC Interferes with: Co, Pb, Tl )";
+                    interferenceMessage = "( Ni SIC Interferes with: Co, Pb, Tl )\n";
                 }
                 break;
             case "Pb":
                 if (measuredValue > Pb_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Pb SIC Interferes with: N/A ) ";
+                    interferenceMessage = "( Pb SIC Interferes with: N/A )\n";
                 }
                 break;
             case "Sb":
                 if (measuredValue > Sb_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Sb SIC Interferes with: As, Ni, Tl )";
+                    interferenceMessage = "( Sb SIC Interferes with: As, Ni, Tl )\n";
                 }
                 break;
             case "Se":
                 if (measuredValue > Se_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Se SIC Interferes with: Sb, Tl) ";
+                    interferenceMessage = "( Se SIC Interferes with: Sb, Tl)\n";
                 }
                 break;
             case "Sn":
                 if (measuredValue > Sn_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Sn SIC Interferes with: Sb ) ";
+                    interferenceMessage = "( Sn SIC Interferes with: Sb )\n";
                 }
                 break;
             case "Ti":
                 if (measuredValue > Ti_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Ti SIC Interferes with: As, Co, Cu, Pb, Sb, Tl ) ";
+                    interferenceMessage = "( Ti SIC Interferes with: As, Co, Cu, Pb, Sb, Tl )\n";
                 }
                 break;
             case "Tl":
                 if (measuredValue > Tl_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Tl SIC Interferes with: Ni ) ";
+                    interferenceMessage = "( Tl SIC Interferes with: Ni )\n";
                 }
                 break;
             case "V":
                 if (measuredValue > V_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( V SIC Interferes with: Ag, As, Ba, Be, Cd, Cr, Cu, Mg, Mn, Sb, Se, Tl ) ";
+                    interferenceMessage = "( V SIC Interferes with: Ag, As, Ba, Be, Cd, Cr, Cu, Mg, Mn, Sb, Se, Tl )\n";
                 }
                 break;
             case "Zn":
                 if (measuredValue > Zn_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Zn SIC Interferes with: N/A ) ";
+                    interferenceMessage = "( Zn SIC Interferes with: N/A )\n";
                 }
                 break;
             case "Zr":
                 if (measuredValue > Zr_trigger) {
                     isInterference = true;
-                    interferenceMessage = "( Zr SIC Interferes with: N/A ) ";
+                    interferenceMessage = "( Zr SIC Interferes with: N/A )\n";
                 }
                 break;
         }

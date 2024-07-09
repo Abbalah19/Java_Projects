@@ -12,10 +12,15 @@ import com.Pace.SicCheck.models.ICP2_SIC;
 import com.Pace.SicCheck.models.ICP3_SIC;
 import com.Pace.SicCheck.models.ICP4_SIC;
 import com.Pace.SicCheck.models.Measurement;
+
 import javax.swing.SwingUtilities;
+
+import com.Pace.SicCheck.models.StringHelper;
 import com.Pace.SicCheck.ui.SicCheckerSwingUI;
 
 public class Main {
+    private static List<Measurement> measurements = new ArrayList<>();
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -24,8 +29,8 @@ public class Main {
         });
     }
 
-    public static void processFile(String inputFilePath, String outputFilePath) {
-        List<Measurement> measurements = new ArrayList<>();
+    public static void processInputFile(String inputFilePath) {
+        measurements.clear(); // Clear the list before processing a new file
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))) {
             br.readLine(); // Read and ignore the first line (header)
@@ -48,11 +53,9 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
-        for (Measurement measurement : measurements) {
-            System.out.println(measurement.toString());
-        }
-
+    public static void processOutputFile(String outputFilePath) {
         ICP2_SIC icp2 = new ICP2_SIC();
         ICP3_SIC icp3 = new ICP3_SIC();
         ICP4_SIC icp4 = new ICP4_SIC();
@@ -68,34 +71,54 @@ public class Main {
                 String analyteName = measurement.getAnalyteName();
                 double reportedConc = measurement.getReportedConc();
 
-                String sampleResultString = sampleName + "  " + instrumentID + "  " + date + " " + time + " ";
+                String sampleBreak = new StringHelper().getSampleBreak();
+                String seperator = new StringHelper().getSeperator();
+                String footer = new StringHelper().getFooter();
 
-                if (instrumentID == null && "Zr".equals(analyteName)) {
+                String sampleResultString = "";
+
+                if (instrumentID == null && "Ag".equals(analyteName)) {
+                    pw.println(sampleBreak);
                     pw.println(sampleName + " ICP " + date + " " + time + "\n");
                     continue;
                 }
 
                 if ("ICP2".equals(instrumentID)) {
+                    if ("Ag".equals(analyteName)) {
+                        pw.println(sampleBreak);
+                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                    }
                     icp2.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp2.getMessage() + " ";
+                    sampleResultString += icp2.getMessage();
                 }
 
                 if ("ICP3".equals(instrumentID)) {
+                    if ("Ag".equals(analyteName)) {
+                        pw.println(sampleBreak);
+                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                    }
                     icp3.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp3.getMessage() + " ";
+                    sampleResultString += icp3.getMessage();
                 }
 
                 if ("ICP4".equals(instrumentID)) {
+                    if ("Ag".equals(analyteName)) {
+                        pw.println(sampleBreak);
+                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                    }
                     icp4.checkAndBuildMessage(analyteName, reportedConc);
-                    sampleResultString += icp4.getMessage() + " ";
+                    sampleResultString += icp4.getMessage();
                 }
 
                 if ("Zr".equals(analyteName)) {
-                    System.out.println(sampleResultString + "\n");
-                    pw.println(sampleResultString + "\n");
-                    icp2.setMessage(" "); // Reset the message to default
-                    icp3.setMessage(" ");
-                    icp4.setMessage(" ");
+                    if(!sampleResultString.isEmpty()){
+                        pw.println(seperator);
+                        pw.println("~ Possible Interferences ~\n" + sampleResultString);
+                    }
+                    pw.println(footer + "\n");
+                    icp2.setMessage(""); // Reset the message to default
+                    icp3.setMessage("");
+                    icp4.setMessage("");
                 }
             }
         } catch (IOException e) {

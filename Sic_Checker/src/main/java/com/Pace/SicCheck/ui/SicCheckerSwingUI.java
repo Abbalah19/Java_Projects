@@ -1,8 +1,16 @@
 package com.Pace.SicCheck.ui;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import java.io.File;
-import javax.swing.*;
+
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class SicCheckerSwingUI extends JFrame {
     private String inputFilePath;
@@ -69,7 +77,9 @@ public class SicCheckerSwingUI extends JFrame {
              * This fucking line, Gradle did some sort of magic refactoring bullshit that took 4 hours to trace
              * back to. I don't know why, I don't care why but the code compiles whiouth errors now.
              */
-            com.Pace.SicCheck.Main.Main.processFile(getInputFilePath(), getOutputFilePath()+"X.txt");
+            com.Pace.SicCheck.Main.Main.processInputFile(getInputFilePath());
+
+            com.Pace.SicCheck.Main.Main.processOutputFile(getOutputFilePath()+"X.txt");
 
             JOptionPane.showMessageDialog(frame, "Data checked and results saved.", "Data Check",
                     JOptionPane.INFORMATION_MESSAGE);
