@@ -20,7 +20,7 @@ import com.Pace.SicCheck.models.StringHelper;
 import com.Pace.SicCheck.ui.SicCheckerSwingUI;
 
 public class Main {
-    private static List<Measurement> measurements = new ArrayList<>();
+    final private static List<Measurement> measurements = new ArrayList<>();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
@@ -78,6 +78,7 @@ public class Main {
                 //String footer = new StringHelper().getFooter();
 
                 String sicMsg = "";
+                String CCVMsg = "";
 
                 if (instrumentID == null && "Ag".equals(analyteName)) {
                     pw.println(sampleBreak);
@@ -88,6 +89,11 @@ public class Main {
                 if ("Ag".equals(analyteName)) {
                     pw.println(sampleBreak);
                     pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
+                }
+
+                if (sampleName.matches("SEQ-CCV.*")) {
+                    CCV.checkAndBuildMessage(analyteName, reportedConc);
+                    CCVMsg += CCV.getMessage();
                 }
                     
                 if ("ICP2".equals(instrumentID)){
@@ -104,6 +110,11 @@ public class Main {
                 }
             
                 if ("Zr".equals(analyteName)) {
+                    if (!CCVMsg.isEmpty()) {
+                        pw.println(seperator);
+                        pw.println("~ CCV Failures ~\n" + CCVMsg);
+                    }
+
                     if(!sicMsg.isEmpty()){
                         pw.println(seperator);
                         pw.println("~ Possible Interferences ~\n" + sicMsg);
