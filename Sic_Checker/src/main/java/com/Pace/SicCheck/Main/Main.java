@@ -86,7 +86,7 @@ public class Main {
                 if ("ICP2".equals(instrumentID)) {
                     if ("Ag".equals(analyteName)) {
                         pw.println(sampleBreak);
-                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
                     }
                     icp2.checkAndBuildMessage(analyteName, reportedConc);
                     sampleResultString += icp2.getMessage();
@@ -95,7 +95,7 @@ public class Main {
                 if ("ICP3".equals(instrumentID)) {
                     if ("Ag".equals(analyteName)) {
                         pw.println(sampleBreak);
-                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
                     }
                     icp3.checkAndBuildMessage(analyteName, reportedConc);
                     sampleResultString += icp3.getMessage();
@@ -104,7 +104,7 @@ public class Main {
                 if ("ICP4".equals(instrumentID)) {
                     if ("Ag".equals(analyteName)) {
                         pw.println(sampleBreak);
-                        pw.println(sampleName + " ICP " + date + " " + time + "\n");
+                        pw.println(sampleName + " " + instrumentID + " " + date + " " + time + "\n");
                     }
                     icp4.checkAndBuildMessage(analyteName, reportedConc);
                     sampleResultString += icp4.getMessage();
@@ -115,15 +115,21 @@ public class Main {
                         pw.println(seperator);
                         pw.println("~ Possible Interferences ~\n" + sampleResultString);
                     }
-                    pw.println(footer + "\n");
-                    icp2.setMessage(""); // Reset the message to default
-                    icp3.setMessage("");
-                    icp4.setMessage("");
+                    resetICPMessage(pw, icp2, icp3, icp4);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void resetICPMessage(PrintWriter pw, ICP2_SIC icp2, ICP3_SIC icp3, ICP4_SIC icp4) {
+        String footer = new StringHelper().getFooter();
+        icp2.setMessage(""); // Reset the message to default
+        icp2.setMessage(""); // Reset the message to default
+        icp3.setMessage("");
+        icp4.setMessage("");
+        pw.println(footer + "\n");
     }
 
     private static String safeGetField(String[] fields, int index) {
