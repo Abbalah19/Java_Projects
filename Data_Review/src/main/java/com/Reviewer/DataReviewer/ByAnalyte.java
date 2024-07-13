@@ -58,4 +58,20 @@ public class ByAnalyte {
             this.concCalib4 = concCalib4;
             this.concSamp4 = concSamp4;
     } 
+
+    public String getSampleID() {
+        return sampleID;
+    }
+
+    @Override
+    public String toString() {
+        return "InnerList {" +
+                "sampleId='" + sampleID + '\'' +
+                ", instrumentID='" + userValue1 + '\'' +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", element='" + elem + '\'' +
+                ", value=" + reportedConc +
+                '}';
+    }
 }

@@ -1,11 +1,25 @@
 package com.Reviewer.DataReviewer;
 
-public class BySampleID {
-    final private int specialIndex; // 0
-    final private String sampleID; // 1
+import java.util.ArrayList;
+import java.util.List;
 
-    public BySampleID(int specialIndex, String sampleID) {
-        this.specialIndex = specialIndex;
+public class BySampleID {
+    private String sampleID;
+    private List<ByAnalyte> analytes = new ArrayList<>();
+
+    public BySampleID(String sampleID) {
         this.sampleID = sampleID;
+    }
+
+    public void addAnalyte(ByAnalyte analyte) {
+        this.analytes.add(analyte);
+    }
+
+    public String getSampleID() {
+        return sampleID;
+    }
+
+    public List<ByAnalyte> getAnalytes() {
+        return analytes;
     }
 }

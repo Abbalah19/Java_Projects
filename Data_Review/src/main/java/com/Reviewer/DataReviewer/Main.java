@@ -26,6 +26,7 @@ public class Main {
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))){
             br.readLine(); // Skip the header
             String line;
+
             while ((line = br.readLine()) != null){
                 String[] fields = line.split(",");
 
@@ -65,7 +66,35 @@ public class Main {
         catch (IOException e){
             e.printStackTrace();
         }
+
+        sampleIDList.clear();
+        for (ByAnalyte analyte : innerList){
+            BySampleID sample = findOrCreateSample(analyte.getSampleID());
+            sample.addAnalyte(analyte);
+        }
+        printData();
     }
+
+    private static BySampleID findOrCreateSample(String sampleID){
+        for (BySampleID sample : sampleIDList){
+            if (sample.getSampleID().equals(sampleID)){
+                return sample;
+            }
+        }
+        BySampleID newSample = new BySampleID(sampleID);
+        sampleIDList.add(newSample);
+        return newSample;
+    }
+
+    public static List<ByAnalyte> getDataForSample(String sampleID) {
+        for (BySampleID sample : sampleIDList) {
+            if (sample.getSampleID().equals(sampleID)) {
+                return sample.getAnalytes();
+            }
+        }
+        return new ArrayList<>(); // Return an empty list if the sampleID is not found
+    }
+
     private static String safeGetField(String[] fields, int index) {
         if (index >= 0 && index < fields.length) {
             return fields[index].trim().isEmpty() ? null : fields[index].trim();
@@ -90,6 +119,17 @@ public class Main {
             return Integer.parseInt(value);
         } catch (NumberFormatException e) {
             return defaultValue;
+        }
+    }
+
+    private static void printData(){
+        for (BySampleID sample : sampleIDList){
+            if (sample.getSampleID().matches("SEQ-CCV.*")){
+                System.out.println("Sample ID: " + sample.getSampleID());
+                for (ByAnalyte analyte : sample.getAnalytes()){
+                    System.out.println(analyte);
+                }
+            }
         }
     }
 }
