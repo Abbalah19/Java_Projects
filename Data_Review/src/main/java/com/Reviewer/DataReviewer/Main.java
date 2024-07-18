@@ -113,7 +113,7 @@ public class Main {
                             write.writeLine(analyte.toString());
                     }
                 */
-                
+
                 for (BySampleID sample : sampleIDList) {
                     String sampleID = sample.getSampleID();
                     String insturmentID = sample.getInsturmentID(0) != null ? sample.getInsturmentID(0) : "ICP";
@@ -127,7 +127,7 @@ public class Main {
                         msg = pagePrinters(3)+" ~ Sic Check ~ \n"+ sicReview(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
-                    */
+                    
                     write.writeLine(pagePrinters(2));
                 }
                 
