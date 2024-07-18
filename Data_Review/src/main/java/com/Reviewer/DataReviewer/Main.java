@@ -33,7 +33,7 @@ public class Main {
      *    ...
      */
     public static void parseData(String inputFilePath){
-        System.out.println("Parsing data from: " + inputFilePath);
+        System.out.println(StringHelpers.getRandomMessage());
         innerList.clear();
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))){
@@ -85,7 +85,7 @@ public class Main {
             BySampleID sample = findOrCreateSample(analyte.getSampleID(), analyte.getDate(), analyte.getTime());
             sample.addAnalyte(analyte);
         }
-        printData();
+        //printData();
     }
 
     /*
@@ -101,7 +101,7 @@ public class Main {
      * 6. After the for loop is done, print the footer to the output file and close the print writer.
      */
     public static void reviewData(String outputFilePath, boolean sic, boolean CCV_CCB, boolean overRange,
-        boolean calibration, boolean negative){
+        boolean calibration, boolean negative, boolean internalSTD){
             String msg = "";
             try (Writers write = new Writers(outputFilePath, true)){
                 write.writeLine("Data Review V2.0\n\n");
@@ -123,21 +123,50 @@ public class Main {
                     write.writeLine(pagePrinters(1));
                     write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
                     write.writeLine(pagePrinters(3));
-                    if (sic && !sample.getSampleID().matches("SEQ.*") && !sample.getSampleID().matches("Cal.*") ) {
+                    if (internalSTD){
+                        msg = " ~ Internal Standard Check ~    "+ internalSTD(sample);
+                        write.writeLine(msg+"\n"+pagePrinters(3));
+                    }
+                    if (sic && !sample.getSampleID().matches("SEQ.*") && !sample.getSampleID().matches("Cal.*") 
+                        && !sample.getSampleID().matches("RINSE")) {
                         msg = pagePrinters(3)+" ~ Sic Check ~ \n"+ sicReview(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
                     
                     write.writeLine(pagePrinters(2));
                 }
-                
             }
             catch (IOException e){
                 e.printStackTrace();
             }
         }
 
-        private static String sicReview(BySampleID sample) {
+    private static String internalSTD(BySampleID sample){
+            String msg = "";
+            boolean failure = false;
+            for (ByAnalyte analyte : sample.getAnalytes()){
+                if (analyte.getAnalyteName().equals("Y axial") && analyte.getReportedConc() < 50.0){
+                    msg += "\n  Y - Axial Failed Low.\n";
+                    failure = true;
+                } else if (analyte.getAnalyteName().equals("Y axial") && analyte.getReportedConc() > 150.0){
+                    msg += "\n  Y - Axial Failed High.\n";
+                    failure = true;
+                }
+
+                if (analyte.getAnalyteName().equals("Y radial") && analyte.getReportedConc() < 50.0){
+                    msg += "\n  Y - Radial Failed Low.\n";
+                    failure = true;
+                } else if (analyte.getAnalyteName().equals("Y radial") && analyte.getReportedConc() > 150.0){
+                    msg += "\n  Y - Radial Failed High.\n";
+                    failure = true;
+                }
+            }
+                if (!failure){
+                    msg = "Internal Standard Passed.";
+                }
+            return msg;
+        }
+    private static String sicReview(BySampleID sample) {
             ICP2_Sic icp2 = new ICP2_Sic();
             ICP3_Sic icp3 = new ICP3_Sic();
             ICP4_Sic icp4 = new ICP4_Sic();
@@ -165,8 +194,8 @@ public class Main {
             }
             return msg;
         }
-
-    // adding the data and time check should isolate the data to the specific sample, removing the check will lump all samples
+    
+        // adding the data and time check should isolate the data to the specific sample, removing the check will lump all samples
     // with the same id (i.e. rr's and ccv's) together. The zero index may cuase issues if the nested structure is changed.
     private static BySampleID findOrCreateSample(String sampleID, String date, String time){
         for (BySampleID sample : sampleIDList){
@@ -178,7 +207,6 @@ public class Main {
         sampleIDList.add(newSample);
         return newSample;
     }
-
     public static List<ByAnalyte> getDataForSample(String sampleID) {
         for (BySampleID sample : sampleIDList) {
             if (sample.getSampleID().equals(sampleID)) {
@@ -187,7 +215,6 @@ public class Main {
         }
         return new ArrayList<>(); // Return an empty list if the sampleID is not found
     }
-
     private static String safeGetField(String[] fields, int index) {
         if (index >= 0 && index < fields.length) {
             return fields[index].trim().isEmpty() ? null : fields[index].trim();
@@ -214,7 +241,6 @@ public class Main {
             return defaultValue;
         }
     }
-
     private static void printData(){
         for (BySampleID sample : sampleIDList){
             if (sample.getSampleID().matches("RINSE.*")){
@@ -225,7 +251,6 @@ public class Main {
             }
         }
     }
-
     public static String pagePrinters(int option){
         String printLine = "\n";
         switch (option){

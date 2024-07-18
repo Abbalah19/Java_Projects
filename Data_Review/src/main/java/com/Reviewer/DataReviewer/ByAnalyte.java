@@ -75,6 +75,10 @@ public class ByAnalyte {
         return userValue1;
     }
 
+    public String getAnalyteName() {
+        return analyte_waveLength;
+    }
+
     public String getDate() {
         return date;
     }
