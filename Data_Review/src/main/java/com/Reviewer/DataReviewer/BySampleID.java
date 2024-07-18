@@ -19,6 +19,18 @@ public class BySampleID {
         return sampleID;
     }
 
+    public String getDate(int x) {
+        return analytes.get(x).getDate();
+    }
+
+    public String getTime(int x) {
+        return analytes.get(x).getTime();
+    }
+
+    public String getInsturmentID(int x) {
+        return analytes.get(x).getInsturmentID();
+    }
+
     public List<ByAnalyte> getAnalytes() {
         return analytes;
     }

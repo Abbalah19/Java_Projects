@@ -28,7 +28,7 @@ public class ICP3_Sic {
     final private double V_trigger = 100.0;
     final private double Zn_trigger = 20.0;
     final private double Zr_trigger = 100.0;
-    private String message = " ";
+    private String message = "";
 
     public void checkAndBuildMessage(String metalName, double measuredValue) {
         boolean isInterference = false;

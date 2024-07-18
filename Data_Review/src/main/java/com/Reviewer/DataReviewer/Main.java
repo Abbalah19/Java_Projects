@@ -19,6 +19,19 @@ public class Main {
        }); 
     }
 
+    /*
+     * This method will go through the input file and parse the data line by line into the "innerList" - ByAnalyte objects.
+     * Next it will iterate over the innerList and group each sample into it's own object in the "outerList" - BySampleID objects.
+     * It should look something like this:
+     * SampleID1
+     *     Analyte1
+     *     Analyte2
+     *     ...
+     * SampleID2
+     *    Analyte1
+     *    Analyte2
+     *    ...
+     */
     public static void parseData(String inputFilePath){
         System.out.println("Parsing data from: " + inputFilePath);
         innerList.clear();
@@ -69,15 +82,95 @@ public class Main {
 
         sampleIDList.clear();
         for (ByAnalyte analyte : innerList){
-            BySampleID sample = findOrCreateSample(analyte.getSampleID());
+            BySampleID sample = findOrCreateSample(analyte.getSampleID(), analyte.getDate(), analyte.getTime());
             sample.addAnalyte(analyte);
         }
         printData();
     }
 
-    private static BySampleID findOrCreateSample(String sampleID){
+    /*
+     * so what is the plan here?
+     * 1. Create method that the UI class can call and pass the checkbox options and output file path too.
+     * 2. open print writer and print a header at the top of the page.
+     * 3. Start a for that goes through the outer list and uses a case statement to send the data
+     *      to the correct review method based on the checkboxes passed in. Each statement should check if the
+     *      checkbox is selected and if the data needs to be processed by the connected method. Each method
+     *      should return a string that will be added to that samples stored string.
+     * 4. After the case statement is done, print the sample strings to the output file.
+     * 5. Clear the built up sample strings and start the next iteration of the for loop.
+     * 6. After the for loop is done, print the footer to the output file and close the print writer.
+     */
+    public static void reviewData(String outputFilePath, boolean sic, boolean CCV_CCB, boolean overRange,
+        boolean calibration, boolean negative){
+            String msg = "";
+            try (Writers write = new Writers(outputFilePath, true)){
+                write.writeLine("Data Review V2.0\n\n");
+
+                /* For thesting the nested arralyList structure
+                for (BySampleID sample : sampleIDList) {
+                        write.writeLine("Sample ID: " + sample.getSampleID() + "sample time: " + sample.getTime(0));
+                        for (ByAnalyte analyte : sample.getAnalytes()){
+                            write.writeLine(analyte.toString());
+                    }
+                */
+                
+                for (BySampleID sample : sampleIDList) {
+                    String sampleID = sample.getSampleID();
+                    String insturmentID = sample.getInsturmentID(0) != null ? sample.getInsturmentID(0) : "ICP";
+                    String date = sample.getDate(0);
+                    String time = sample.getTime(0);
+                    //System.out.println("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
+                    write.writeLine(pagePrinters(1));
+                    write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
+                    write.writeLine(pagePrinters(3));
+                    if (sic && !sample.getSampleID().matches("SEQ.*") && !sample.getSampleID().matches("Cal.*") ) {
+                        msg = pagePrinters(3)+" ~ Sic Check ~ \n"+ sicReview(sample);
+                        write.writeLine(msg+"\n"+pagePrinters(3));
+                    }
+                    */
+                    write.writeLine(pagePrinters(2));
+                }
+                
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+
+        private static String sicReview(BySampleID sample) {
+            ICP2_Sic icp2 = new ICP2_Sic();
+            ICP3_Sic icp3 = new ICP3_Sic();
+            ICP4_Sic icp4 = new ICP4_Sic();
+            String msg = "";
+        
+            for (ByAnalyte analyte : sample.getAnalytes()) {
+                
+                double reportedConc = analyte.getReportedConc();
+                String analyteName = analyte.getElem();
+                if ("ICP2".equals(analyte.getInsturmentID())) {
+                    icp2.checkAndBuildMessage(analyteName, reportedConc);
+                    msg += icp2.getMessage();
+                    icp2.setMessage("");
+                }
+                if ("ICP3".equals(analyte.getInsturmentID())) {
+                    icp3.checkAndBuildMessage(analyteName, reportedConc);
+                    msg += icp3.getMessage();
+                    icp3.setMessage("");
+                }
+                if ("ICP - 4".equals(analyte.getInsturmentID())) {
+                    icp4.checkAndBuildMessage(analyteName, reportedConc);
+                    msg += icp4.getMessage();
+                    icp4.setMessage("");
+                }               
+            }
+            return msg;
+        }
+
+    // adding the data and time check should isolate the data to the specific sample, removing the check will lump all samples
+    // with the same id (i.e. rr's and ccv's) together. The zero index may cuase issues if the nested structure is changed.
+    private static BySampleID findOrCreateSample(String sampleID, String date, String time){
         for (BySampleID sample : sampleIDList){
-            if (sample.getSampleID().equals(sampleID)){
+            if (sample.getSampleID().equals(sampleID) && sample.getDate(0).equals(date) && sample.getTime(0).equals(time)){
                 return sample;
             }
         }
@@ -124,12 +217,28 @@ public class Main {
 
     private static void printData(){
         for (BySampleID sample : sampleIDList){
-            if (sample.getSampleID().matches("SEQ-CCV.*")){
+            if (sample.getSampleID().matches("RINSE.*")){
                 System.out.println("Sample ID: " + sample.getSampleID());
                 for (ByAnalyte analyte : sample.getAnalytes()){
                     System.out.println(analyte);
                 }
             }
         }
+    }
+
+    public static String pagePrinters(int option){
+        String printLine = "\n";
+        switch (option){
+            case 1:
+                printLine = StringHelpers.sampleBreak;
+                break;
+            case 2:
+                printLine = StringHelpers.footer + "\n";
+                break;
+            case 3:
+                printLine = StringHelpers.seperator;
+                break;
+        }
+        return printLine;
     }
 }

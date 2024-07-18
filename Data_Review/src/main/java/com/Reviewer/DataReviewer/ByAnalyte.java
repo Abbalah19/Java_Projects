@@ -63,6 +63,26 @@ public class ByAnalyte {
         return sampleID;
     }
 
+    public Double getReportedConc() {
+        return reportedConc;
+    }
+
+    public String getElem() {
+        return elem;
+    }
+
+    public String getInsturmentID() {
+        return userValue1;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
     @Override
     public String toString() {
         return "InnerList {" +

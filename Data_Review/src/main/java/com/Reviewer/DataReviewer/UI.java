@@ -117,7 +117,13 @@ public class UI extends JFrame{
             if (inputFilePath == null || outputFilePath == null) {
                 JOptionPane.showMessageDialog(frame, "Please select input and output files");
             } else {
+                boolean sic = sicCheckBox.isSelected();
+                boolean CCV_CCB = CCV_CCBCheckBox.isSelected();
+                boolean overRange = overRangeCheckBox.isSelected();
+                boolean calibration = calibrationCheckBox.isSelected();
+                boolean negative = negativeCheckBox.isSelected();
                 com.Reviewer.DataReviewer.Main.parseData(inputFilePath);
+                com.Reviewer.DataReviewer.Main.reviewData(outputFilePath+".txt", sic, CCV_CCB, overRange, calibration, negative);
                 JOptionPane.showMessageDialog(frame, "Data Reviewed Successfully");
             }
         });
