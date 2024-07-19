@@ -23,7 +23,7 @@ public class UI extends JFrame{
     private JCheckBox negativeCheckBox;
     private JCheckBox internalSTDCheckBox;
 
-    public static String passwordX = "secret";
+    public static String passwordX;
 
     public void createGUI() {
         frame = new JFrame("Data Reviewer");
@@ -38,10 +38,14 @@ public class UI extends JFrame{
         
 
         String password = JOptionPane.showInputDialog(frame, "Enter your password:");
-        if ("secret".equals(password) || "AJ".equals(password)) {
-            JOptionPane.showMessageDialog(frame, "Welcome, authorized user!");
-            passwordX = password;
+        setPassword(password);
+        if ("secret".equals(password) || "AJ".equals(password) || "JLC".equals(password)) {
+            if ("secret".equals(password)) {
+                JOptionPane.showMessageDialog(frame, "Welcome to the Data Reviewer program!");
+            } else {
+            JOptionPane.showMessageDialog(frame, StringHelpers.getRandomMessage());
             frame.setVisible(true);
+        }
         } else {
             JOptionPane.showMessageDialog(frame, "Incorrect password, access denied.");
             System.exit(0);
@@ -49,6 +53,9 @@ public class UI extends JFrame{
     }
     public static String getPassword() {
         return passwordX;
+    }
+    public static void setPassword(String password) {
+        passwordX = password;
     }
 
     private JPanel createAboutPanel() {
@@ -153,10 +160,30 @@ public class UI extends JFrame{
     }
 
     private static final String ABOUT_STRING = "Data Reviewer\nVersion 2.0\nThis program is still in development!!!\n" +
-            "You should expect bugs, typos and unexpected behavior. You can report bugs to me and, IF I feel like it, I'll" +
-            " fix them.\nOtherwise, just be aware that this program is not meant to be used by untrained data" +
-            " reviewers and is not meant to replace traditional review practices. Double check all limits and don't trust" +
-            " me to have coded them all in, mostly from memory, correctly.\nOther than that, if this helps you" +
-            " get through your day, then I am happy to have helped. Enjoy!\n\nKnown Bugs:\n - None (don't worry, we'll" +
-            " find some)\n Only the Sic check and IS check is implemented at this time. Samples being to negative is coming next";
+            "The stuff you need to know:\n" +
+            "This is a test program and as such you should expect bugs, typos and unexpected behavior.\n"+
+            "You can report bugs to me and, IF I feel like it, I'll fix them. Otherwise, just be aware\n"+
+            "that this program is not meant to be used by untrained data reviewers and is not meant to\n"+
+            "replace traditional review practices. Double check all limits and don't trust me to have\n"+
+            "coded them all in, mostly from memory, correctly.\n"+
+            "Other than that, if this helps you get through your day, then I am happy to have helped.\n"+
+            "Enjoy!\n\n"+
+            "Known Bugs:\n"+
+            "- None (don't worry, we'll find some)\n"+
+            "Only the Sic check and IS check is implemented at this time. Samples being too negative is coming next" +
+            "\n\nAll the Crap you don't care about and probably won't read:\n"+
+            "- Negative value check is being reworked to use a map and a class to store the data\n"+
+            "- Negative value check only applies to sample data, SEQ.* and CAL.* is excluded\n"+
+            "- Set up custom messages for AJ and JLC, defualt password is 'secret'\n"+
+            "- The current prn file format does not include the data to calculate RE's or R2 values from,\n"+
+            "the cal and adding it to the format might break how it is read from element. This may not\n"+
+            "be a problem on the new system but for now......\n" +
+            "- The current password system is hardcoded and only there for future devolopment. I might get\n"+
+            "bored and build a database later, we'll see.\n"+
+            "- The currenct structure scans through a prn file and builds an arrayList object from each row. A\n"+
+            "second iteration over the list groups the data objects into another arrayList based on the\n"+
+            "sample id and time. This isn't exactly efficient but we might make up time for actions that\n"+
+            "have to scan back or forth through the data. We'll see.\n"+
+            "- The objects created for the inner list actually collect more data then is currently used. This\n"+
+            "is is becuase I might want to add more checks in the future and I don't want to modify my class\n";
 }

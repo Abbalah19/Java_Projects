@@ -127,6 +127,10 @@ public class Main {
                         msg = " ~ Internal Standard Check ~    "+ internalSTD(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
+                    if (negative){
+                        msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
+                        write.writeLine(msg+"\n"+pagePrinters(3));
+                    }
                     if (sic && !sample.getSampleID().matches("SEQ.*") && !sample.getSampleID().matches("Cal.*") 
                         && !sample.getSampleID().matches("RINSE")) {
                         msg = pagePrinters(3)+" ~ Sic Check ~ \n"+ sicReview(sample);
@@ -166,6 +170,18 @@ public class Main {
                 }
             return msg;
         }
+    private static String negativeReview(BySampleID sample){
+        NegativeReview neg = new NegativeReview();
+        String msg = "";
+        for (ByAnalyte analyte : sample.getAnalytes()){
+            double reportedConc = analyte.getReportedConc();
+            String analyteName = analyte.getElem();
+            neg.negChecker(analyteName, reportedConc);
+            msg += neg.getMsg();
+            neg.setMsgOver("");
+        }
+        return msg;
+    }
     private static String sicReview(BySampleID sample) {
             ICP2_Sic icp2 = new ICP2_Sic();
             ICP3_Sic icp3 = new ICP3_Sic();
