@@ -127,7 +127,7 @@ public class Main {
                         msg = " ~ Internal Standard Check ~    "+ internalSTD(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
-                    if (negative){
+                    if (negative && !sample.getSampleID().matches("Cal.*") && !sample.getSampleID().matches("SEQ-CAL.*")) {
                         msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
@@ -149,18 +149,18 @@ public class Main {
             String msg = "";
             boolean failure = false;
             for (ByAnalyte analyte : sample.getAnalytes()){
-                if (analyte.getAnalyteName().equals("Y axial") && analyte.getReportedConc() < 50.0){
+                if (analyte.getAnalyteName().equals("Y axial") && analyte.getConcCalib() < 50.0){
                     msg += "\n  Y - Axial Failed Low.\n";
                     failure = true;
-                } else if (analyte.getAnalyteName().equals("Y axial") && analyte.getReportedConc() > 150.0){
+                } else if (analyte.getAnalyteName().equals("Y axial") && analyte.getConcCalib() > 150.0){
                     msg += "\n  Y - Axial Failed High.\n";
                     failure = true;
                 }
 
-                if (analyte.getAnalyteName().equals("Y radial") && analyte.getReportedConc() < 50.0){
+                if (analyte.getAnalyteName().equals("Y radial") && analyte.getConcCalib() < 50.0){
                     msg += "\n  Y - Radial Failed Low.\n";
                     failure = true;
-                } else if (analyte.getAnalyteName().equals("Y radial") && analyte.getReportedConc() > 150.0){
+                } else if (analyte.getAnalyteName().equals("Y radial") && analyte.getConcCalib() > 150.0){
                     msg += "\n  Y - Radial Failed High.\n";
                     failure = true;
                 }

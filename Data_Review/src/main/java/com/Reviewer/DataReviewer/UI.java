@@ -42,6 +42,7 @@ public class UI extends JFrame{
         if ("secret".equals(password) || "AJ".equals(password) || "JLC".equals(password)) {
             if ("secret".equals(password)) {
                 JOptionPane.showMessageDialog(frame, "Welcome to the Data Reviewer program!");
+                frame.setVisible(true);
             } else {
             JOptionPane.showMessageDialog(frame, StringHelpers.getRandomMessage());
             frame.setVisible(true);
@@ -170,16 +171,17 @@ public class UI extends JFrame{
             "Enjoy!\n\n"+
             "Known Bugs:\n"+
             "- None (don't worry, we'll find some)\n"+
-            "Only the Sic check and IS check is implemented at this time. Samples being too negative is coming next" +
+            "Only the Sic check, negative values and IS check is implemented at this time." +
             "\n\nAll the Crap you don't care about and probably won't read:\n"+
-            "- Negative value check is being reworked to use a map and a class to store the data\n"+
-            "- Negative value check only applies to sample data, SEQ.* and CAL.* is excluded\n"+
+            "- Negative value check has been reworked to use a map from ReportingLevelMap class to check the data,\n"+
+            "this should help with future checks like CCB and calibration.\nRight now Cal.* and SEQ-CAL.* are\n"+
+            "excluded from the negative check."+
             "- Set up custom messages for AJ and JLC, defualt password is 'secret'\n"+
-            "- The current prn file format does not include the data to calculate RE's or R2 values from,\n"+
-            "the cal and adding it to the format might break how it is read from element. This may not\n"+
+            "- The current prn file format does not include the data to calculate RE's or R2 values from\n"+
+            "the cal and adding it to the format might break how it is read for element. This may not\n"+
             "be a problem on the new system but for now......\n" +
-            "- The current password system is hardcoded and only there for future devolopment. I might get\n"+
-            "bored and build a database later, we'll see.\n"+
+            "- The current password system is hardcoded and really is only there b/c I was playing around.\n"+
+            "I might get bored and build a database and some security later, we'll see.\n"+
             "- The currenct structure scans through a prn file and builds an arrayList object from each row. A\n"+
             "second iteration over the list groups the data objects into another arrayList based on the\n"+
             "sample id and time. This isn't exactly efficient but we might make up time for actions that\n"+

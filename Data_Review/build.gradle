@@ -1,0 +1,39 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group = 'com.Reviewer.DataReviewer'
+version = '2.0'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+application {
+    mainClassName = 'com.Reviewer.DataReviewer.Main'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Main-Class': 'com.Reviewer.DataReviewer.Main'
+        )
+    }
+}
+
+task fatJar (type: Jar){
+    manifest {
+        attributes 'Main-Class': 'com.Reviewer.DataReviewer.Main'
+    }
+    archiveBaseName = project.name + '-all'
+    from {configurations.runtimeClasspath.collect {it.isDirectory() ? it : zipTree(it)}}
+    with jar
+}

@@ -87,6 +87,10 @@ public class ByAnalyte {
         return time;
     }
 
+    public Double getConcCalib() {
+        return concCalib;
+    }
+
     @Override
     public String toString() {
         return "InnerList {" +
