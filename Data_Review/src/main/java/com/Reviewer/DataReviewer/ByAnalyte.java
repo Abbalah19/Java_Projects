@@ -32,31 +32,31 @@ public class ByAnalyte {
         String sampUnits, Double intCorr, int repNumber1, Double concCalib1, Double concSamp1, int repNumber2, 
         Double concCalib2, Double concSamp2, int repNumber3, Double concCalib3, Double concSamp3, int repNumber4, 
         Double concCalib4, Double concSamp4) {
-            this.sampleID = sampleID;
-            this.userValue1 = userValue1;
-            this.date = date;
-            this.time = time;
-            this.analyte_waveLength = analyte_waveLength;
-            this.concSamp = concSamp;
-            this.elem = elem;
-            this.wavelength = wavelength;
-            this.concCalib = concCalib;
-            this.reportedConc = reportedConc;
-            this.calibUnits = calibUnits;
-            this.sampUnits = sampUnits;
-            this.intCorr = intCorr;
+            this.sampleID = sampleID != null ? sampleID : "";
+            this.userValue1 = userValue1 != null ? userValue1 : "";
+            this.date = date != null ? date : "";
+            this.time = time != null ? time : "";
+            this.analyte_waveLength = analyte_waveLength != null ? analyte_waveLength : "";
+            this.concSamp = concSamp != null ? concSamp : 0.0;
+            this.elem = elem != null ? elem : "";
+            this.wavelength = wavelength != null ? wavelength : 0.0;
+            this.concCalib = concCalib != null ? concCalib : 0.0;
+            this.reportedConc = reportedConc != null ? reportedConc : 0.0;
+            this.calibUnits = calibUnits != null ? calibUnits : "";
+            this.sampUnits = sampUnits != null ? sampUnits : "";
+            this.intCorr = intCorr != null ? intCorr : 0.0;
             this.repNumber1 = repNumber1;
-            this.concCalib1 = concCalib1;
-            this.concSamp1 = concSamp1;
+            this.concCalib1 = concCalib1 != null ? concCalib1 : 0.0;
+            this.concSamp1 = concSamp1 != null ? concSamp1 : 0.0;
             this.repNumber2 = repNumber2;
-            this.concCalib2 = concCalib2;
-            this.concSamp2 = concSamp2;
+            this.concCalib2 = concCalib2 != null ? concCalib2 : 0.0;
+            this.concSamp2 = concSamp2 != null ? concSamp2 : 0.0;
             this.repNumber3 = repNumber3;
-            this.concCalib3 = concCalib3;
-            this.concSamp3 = concSamp3;
+            this.concCalib3 = concCalib3 != null ? concCalib3 : 0.0; 
+            this.concSamp3 = concSamp3 != null ? concSamp3 : 0.0;
             this.repNumber4 = repNumber4;
-            this.concCalib4 = concCalib4;
-            this.concSamp4 = concSamp4;
+            this.concCalib4 = concCalib4 != null ? concCalib4 : 0.0;
+            this.concSamp4 = concSamp4 != null ? concSamp4 : 0.0;
     } 
 
     public String getSampleID() {

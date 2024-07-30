@@ -4,12 +4,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
+
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 public class UI extends JFrame{
@@ -62,16 +65,28 @@ public class UI extends JFrame{
     private JPanel createAboutPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
+        
         JButton button = new JButton("About");
         button.addActionListener(e -> {
-            JOptionPane.showMessageDialog(frame, ABOUT_STRING);
+            JTextArea textArea = new JTextArea(ABOUT_STRING);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setEditable(false);
+            
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(400, 400)); // Set the preferred size
+            
+            JOptionPane.showMessageDialog(frame, scrollPane, "About", JOptionPane.INFORMATION_MESSAGE);
         });
+        
         JButton button2 = new JButton("Exit");
         button2.addActionListener(e -> {
             System.exit(0);
         });
+        
         panel.add(button);
         panel.add(button2);
+        
         return panel;
     }
 
@@ -120,11 +135,11 @@ public class UI extends JFrame{
     private JPanel createCheckBoxPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 3)); // 3 rows, 3 columns
-        sicCheckBox = new JCheckBox("SIC"); // 1:1
-        CCV_CCBCheckBox = new JCheckBox("CCV/CCB"); // 1:2
-        overRangeCheckBox = new JCheckBox("Over Range"); // 1:3
-        calibrationCheckBox = new JCheckBox("Calibration"); // 2:1
-        negativeCheckBox = new JCheckBox("Negative"); // 2:2
+        sicCheckBox = new JCheckBox("SIC Check"); // 1:1
+        CCV_CCBCheckBox = new JCheckBox("Include CCV/CCB"); // 1:2
+        overRangeCheckBox = new JCheckBox("Over Range (Dilution)"); // 1:3
+        calibrationCheckBox = new JCheckBox("Calibration QC"); // 2:1
+        negativeCheckBox = new JCheckBox("Too Negative"); // 2:2
         internalSTDCheckBox = new JCheckBox("Y Range (50-150%)"); // 2:3
 
         panel.add(sicCheckBox);
@@ -160,32 +175,44 @@ public class UI extends JFrame{
         return panel;
     }
 
-    private static final String ABOUT_STRING = "Data Reviewer\nVersion 2.0\nThis program is still in development!!!\n" +
+    private static final String ABOUT_STRING = "Data Reviewer Version 2.0\n\nThis program is still in development!!!\n\n" +
             "The stuff you need to know:\n" +
-            "This is a test program and as such you should expect bugs, typos and unexpected behavior.\n"+
-            "You can report bugs to me and, IF I feel like it, I'll fix them. Otherwise, just be aware\n"+
-            "that this program is not meant to be used by untrained data reviewers and is not meant to\n"+
-            "replace traditional review practices. Double check all limits and don't trust me to have\n"+
-            "coded them all in, mostly from memory, correctly.\n"+
+            "This is a test program and as such you should expect bugs, typos and unexpected behavior. "+
+            "You can report bugs to me and, IF I feel like it, I'll fix them. Otherwise, just be aware "+
+            "that this program is not meant to be used by untrained data reviewers and is not meant to "+
+            "replace traditional review practices. Double check all limits and don't trust me to have "+
+            "coded them all in, mostly from memory, correctly.\n\n"+
             "Other than that, if this helps you get through your day, then I am happy to have helped.\n"+
-            "Enjoy!\n\n"+
-            "Known Bugs:\n"+
-            "- None (don't worry, we'll find some)\n"+
-            "Only the Sic check, negative values and IS check is implemented at this time." +
-            "\n\nAll the Crap you don't care about and probably won't read:\n"+
-            "- Negative value check has been reworked to use a map from ReportingLevelMap class to check the data,\n"+
-            "this should help with future checks like CCB and calibration.\nRight now Cal.* and SEQ-CAL.* are\n"+
-            "excluded from the negative check."+
-            "- Set up custom messages for AJ and JLC, defualt password is 'secret'\n"+
-            "- The current prn file format does not include the data to calculate RE's or R2 values from\n"+
-            "the cal and adding it to the format might break how it is read for element. This may not\n"+
-            "be a problem on the new system but for now......\n" +
-            "- The current password system is hardcoded and really is only there b/c I was playing around.\n"+
-            "I might get bored and build a database and some security later, we'll see.\n"+
-            "- The currenct structure scans through a prn file and builds an arrayList object from each row. A\n"+
-            "second iteration over the list groups the data objects into another arrayList based on the\n"+
-            "sample id and time. This isn't exactly efficient but we might make up time for actions that\n"+
-            "have to scan back or forth through the data. We'll see.\n"+
-            "- The objects created for the inner list actually collect more data then is currently used. This\n"+
-            "is is becuase I might want to add more checks in the future and I don't want to modify my class\n";
+            "-Matt\n\n"+
+            "Known Issues:\n"+
+            "- Bugs -> ICP4 has slightly different ID's so it checks more points then I want, easy fix, I'll get to it \n"+
+            "- Issue -> ICP4 data manager exports in little endian, not UTF-8..... why? WHY? Who exports files this way? "+
+            " This will be a headache, don't expect a fix soon. ( try block -> if UTF-8 :), else :( ?)\n\n"+
+            "Only the Sic check, negative values and IS check is implemented at this time. In most cases " +
+            "Instrument QC, Calibration and Rinse samples are ignored by the checks.\n\n"+
+            "The current program uses a lot of string matching to identify what sample is being checked and "+
+            "position matching from the prn file to identify what data from that sample is being checked. "+
+            "Changes to ID's or changes to data manager templates will break things. It will be a simple fix though.\n\n"+
+            "\n\nAll the Crap you don't care about and probably won't read:\n\n"+
+
+            "- Negative value check has been reworked to use a map from ReportingLevelMap class to check the data, "+
+            "this should help with future checks like CCB and calibration.\n\n"+
+            
+            "- Set up custom messages for AJ and JLC, default password is 'secret'.\n\n"+
+            
+            "- The current password system is hardcoded and is only there becuase I was playing around. "+
+            "Do not expect any meaningful security. If in some far distant time, I am bored then, I might "+
+            "tie in some SQL like databases and then once we can store data, security might become important.\n\n"+
+
+            "- The current prn file format does not include the data to calculate RE's or R2 values from "+
+            "the cal and adding it to the format might break how it is read for element. This may not "+
+            "be a problem on the new system but for now......\n\n" +
+            
+            "- The current structure scans through a prn file and builds an arrayList object from each row. A "+
+            "second iteration over the list groups the data objects into another arrayList based on the "+
+            "sample id and time. This isn't exactly efficient but we might make up time for actions that "+
+            "have to scan back or forth through the data. We'll see.\n\n"+
+            
+            "- The objects created for the inner list actually collect more data then is currently used. This "+
+            "is is becuase I might want to add more checks in the future and I don't want to modify my class.\n\n";
 }

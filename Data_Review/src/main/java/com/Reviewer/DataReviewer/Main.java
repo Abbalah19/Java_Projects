@@ -123,11 +123,12 @@ public class Main {
                     write.writeLine(pagePrinters(1));
                     write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
                     write.writeLine(pagePrinters(3));
-                    if (internalSTD){
+                    if (internalSTD && !sample.getSampleID().matches("SEQ-CAL.*") && !sample.getSampleID().matches("RINSE")) {
                         msg = " ~ Internal Standard Check ~    "+ internalSTD(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
-                    if (negative && !sample.getSampleID().matches("Cal.*") && !sample.getSampleID().matches("SEQ-CAL.*")) {
+                    if (negative && !sample.getSampleID().matches("Cal.*") && !sample.getSampleID().matches("SEQ-CAL.*") &&
+                        !sample.getSampleID().matches("RINSE")) {
                         msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
                         write.writeLine(msg+"\n"+pagePrinters(3));
                     }
@@ -166,7 +167,7 @@ public class Main {
                 }
             }
                 if (!failure){
-                    msg = "Internal Standard Passed.";
+                    msg = "\nInternal Standard Passed.";
                 }
             return msg;
         }
@@ -179,6 +180,9 @@ public class Main {
             neg.negChecker(analyteName, reportedConc);
             msg += neg.getMsg();
             neg.setMsgOver("");
+        }
+        if (msg.isEmpty()){
+            msg = "Negative Check Passed.";
         }
         return msg;
     }
@@ -207,6 +211,9 @@ public class Main {
                     msg += icp4.getMessage();
                     icp4.setMessage("");
                 }               
+            }
+            if (msg.isEmpty()) {
+                msg = "SIC Check Passed.";
             }
             return msg;
         }
