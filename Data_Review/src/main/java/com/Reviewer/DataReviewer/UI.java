@@ -175,7 +175,7 @@ public class UI extends JFrame{
         return panel;
     }
 
-    private static final String ABOUT_STRING = "Data Reviewer Version 2.0\n\nThis program is still in development!!!\n\n" +
+    private static final String ABOUT_STRING = "Data Reviewer Version 2.1\n\nThis program is still in development!!!\n\n" +
             "The stuff you need to know:\n" +
             "This is a test program and as such you should expect bugs, typos and unexpected behavior. "+
             "You can report bugs to me and, IF I feel like it, I'll fix them. Otherwise, just be aware "+
@@ -187,7 +187,7 @@ public class UI extends JFrame{
             "Known Issues:\n"+
             "- Bugs -> ICP4 has slightly different ID's so it checks more points then I want, easy fix, I'll get to it \n"+
             "- Issue -> ICP4 data manager exports in little endian, not UTF-8..... why? WHY? Who exports files this way? "+
-            " This will be a headache, don't expect a fix soon. ( try block -> if UTF-8 :), else :( ?)\n\n"+
+            " This will be a headache, don't expect a fix soon. ( try block -> if UTF-8 :), else :(   ?)\n\n"+
             "Only the Sic check, negative values and IS check is implemented at this time. In most cases " +
             "Instrument QC, Calibration and Rinse samples are ignored by the checks.\n\n"+
             "The current program uses a lot of string matching to identify what sample is being checked and "+

@@ -104,7 +104,7 @@ public class Main {
         boolean calibration, boolean negative, boolean internalSTD){
             String msg = "";
             try (Writers write = new Writers(outputFilePath, true)){
-                write.writeLine("Data Review V2.0\n\n");
+                write.writeLine("Data Review V2.1\n\n");
 
                 /* For thesting the nested arralyList structure
                 for (BySampleID sample : sampleIDList) {
@@ -120,25 +120,31 @@ public class Main {
                     String date = sample.getDate(0);
                     String time = sample.getTime(0);
                     //System.out.println("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
-                    write.writeLine(pagePrinters(1));
-                    write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
-                    write.writeLine(pagePrinters(3));
-                    if (internalSTD && !sample.getSampleID().matches("SEQ-CAL.*") && !sample.getSampleID().matches("RINSE")) {
-                        msg = " ~ Internal Standard Check ~    "+ internalSTD(sample);
-                        write.writeLine(msg+"\n"+pagePrinters(3));
+
+                    if (!sample.getSampleID().matches("Cal Blank@.*") &&
+                        !sample.getSampleID().matches("SEQ-CAL.*") &&
+                        !sample.getSampleID().matches("RINSE.*") )
+                    {
+                        write.writeLine(pagePrinters(1));
+                        write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
+                        write.writeLine(pagePrinters(3));
+
+                        if (internalSTD) {
+                            msg = " ~ Internal Standard Check ~    \n"+ internalSTD(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
+                        if (negative) {
+                            msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
+                        if (sic) {
+                            msg = " ~ Sic Check ~ \n"+ sicReview(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
                     }
-                    if (negative && !sample.getSampleID().matches("Cal.*") && !sample.getSampleID().matches("SEQ-CAL.*") &&
-                        !sample.getSampleID().matches("RINSE")) {
-                        msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
-                        write.writeLine(msg+"\n"+pagePrinters(3));
-                    }
-                    if (sic && !sample.getSampleID().matches("SEQ.*") && !sample.getSampleID().matches("Cal.*") 
-                        && !sample.getSampleID().matches("RINSE")) {
-                        msg = pagePrinters(3)+" ~ Sic Check ~ \n"+ sicReview(sample);
-                        write.writeLine(msg+"\n"+pagePrinters(3));
-                    }
-                    
-                    write.writeLine(pagePrinters(2));
                 }
             }
             catch (IOException e){
@@ -151,23 +157,23 @@ public class Main {
             boolean failure = false;
             for (ByAnalyte analyte : sample.getAnalytes()){
                 if (analyte.getAnalyteName().equals("Y axial") && analyte.getConcCalib() < 50.0){
-                    msg += "\n  Y - Axial Failed Low.\n";
+                    msg += "  Y - Axial Failed Low.\n";
                     failure = true;
                 } else if (analyte.getAnalyteName().equals("Y axial") && analyte.getConcCalib() > 150.0){
-                    msg += "\n  Y - Axial Failed High.\n";
+                    msg += "  Y - Axial Failed High.\n";
                     failure = true;
                 }
 
                 if (analyte.getAnalyteName().equals("Y radial") && analyte.getConcCalib() < 50.0){
-                    msg += "\n  Y - Radial Failed Low.\n";
+                    msg += "  Y - Radial Failed Low.\n";
                     failure = true;
                 } else if (analyte.getAnalyteName().equals("Y radial") && analyte.getConcCalib() > 150.0){
-                    msg += "\n  Y - Radial Failed High.\n";
+                    msg += "  Y - Radial Failed High.\n";
                     failure = true;
                 }
             }
                 if (!failure){
-                    msg = "\nInternal Standard Passed.";
+                    msg = "Internal Standard Passed.";
                 }
             return msg;
         }
