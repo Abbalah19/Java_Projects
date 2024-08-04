@@ -33,7 +33,7 @@ public class Main {
      *    ...
      */
     public static void parseData(String inputFilePath){
-        System.out.println(StringHelpers.getRandomMessage());
+        //System.out.println(StringHelpers.getRandomMessage());
         innerList.clear();
 
         try (BufferedReader br = new BufferedReader(new FileReader(inputFilePath))){
@@ -122,8 +122,9 @@ public class Main {
                     //System.out.println("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
 
                     if (!sample.getSampleID().matches("Cal Blank@.*") &&
-                        !sample.getSampleID().matches("SEQ-CAL.*") &&
-                        !sample.getSampleID().matches("RINSE.*") )
+                        !sample.getSampleID().matches("SEQ.*") &&
+                        !sample.getSampleID().matches("RINSE.*") &&
+                        !sample.getSampleID().matches("ICV-RR"))
                     {
                         write.writeLine(pagePrinters(1));
                         write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
@@ -145,6 +146,33 @@ public class Main {
                             write.writeLine(pagePrinters(3));
                         }
                     }
+                    if (CCV_CCB && (sample.getSampleID().matches("SEQ-CCV.*") || 
+                        sample.getSampleID().matches("SEQ-CCB.*")))
+                        {
+                            write.writeLine(pagePrinters(1));
+                            write.writeLine("~ " + sampleID + "  " + insturmentID + "   " + date + "    " + time + " ~");
+                            write.writeLine(pagePrinters(3));    
+
+                        if (internalSTD) {
+                            msg = " ~ Internal Standard Check ~    \n"+ internalSTD(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
+                        if (sample.getSampleID().matches("SEQ-CCV.*")) {
+                            msg = " ~ Recovery Check ~ \n"+ CCV_RecoveryCheck(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+
+                            msg = " ~ CCV RSD Check ~ \n"+ CCV_RSD(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
+                        if (negative && sample.getSampleID().matches("SEQ-CCB.*")) {
+                            msg = " ~ Negative Check ~ \n"+ negativeReview(sample);
+                            write.writeLine(msg+"\n");
+                            write.writeLine(pagePrinters(3));
+                        }
+                    }
                 }
             }
             catch (IOException e){
@@ -152,6 +180,53 @@ public class Main {
             }
         }
 
+    private static String CCV_RecoveryCheck(BySampleID sample){
+        CCV_Recovery ccv = new CCV_Recovery();
+        String msg = "";
+        for (ByAnalyte analyte : sample.getAnalytes()){
+            double reportedConc = analyte.getReportedConc();
+            String analyteName = analyte.getElem();
+            ccv.checkCCV(analyteName, reportedConc);
+            msg += ccv.getMessage();
+            ccv.setMessage("");
+        }
+        if (msg.isEmpty()){
+            msg = "CCV Check Passed.";
+        }
+        return msg;
+    }
+    private static String CCV_RSD(BySampleID sampleID){
+        String msg = "";
+        boolean failure = false;
+
+        for (ByAnalyte analyte : sampleID.getAnalytes()){
+            if (!analyte.getAnalyteName().equals("Y.*")) {
+                Double point1 = analyte.getConcCalib1();
+                Double point2 = analyte.getConcCalib2();
+                Double point3 = analyte.getConcCalib3();
+                if (analyte.getConcCalib4() != null && analyte.getConcCalib4() != 0.0) {
+                    Double point4 = analyte.getConcCalib4();
+                    Double avg = (point1 + point2 + point3 + point4) / 4;
+                    Double rsd = ((point1 - avg) + (point2 - avg) + (point3 - avg) + (point4 - avg)) / avg;
+                    if (rsd > 0.05) {
+                        msg += "  " + analyte.getAnalyteName() + " Failed RSD ( " + rsd + " ).\n";
+                        failure = true;
+                    }
+                } else {
+                    Double avg = (point1 + point2 + point3) / 3;
+                    Double rsd = ((point1 - avg) + (point2 - avg) + (point3 - avg)) / avg;
+                    if (rsd > 0.05) {
+                        msg += "  " + analyte.getAnalyteName() + " Failed RSD ( " + rsd + " ).\n";
+                        failure = true;
+                    }
+                }
+            } 
+        }
+        if (!failure){
+            msg = "CCV RSD Passed.";
+        }
+        return msg;
+    }
     private static String internalSTD(BySampleID sample){
             String msg = "";
             boolean failure = false;
@@ -224,8 +299,10 @@ public class Main {
             return msg;
         }
     
-        // adding the data and time check should isolate the data to the specific sample, removing the check will lump all samples
-    // with the same id (i.e. rr's and ccv's) together. The zero index may cuase issues if the nested structure is changed.
+    /* 
+    *  adding the data and time check should isolate the data to the specific sample, removing the check will lump all samples
+    *  with the same id (i.e. rr's and ccv's) together. The zero index may cuase issues if the nested structure is changed.
+    */
     private static BySampleID findOrCreateSample(String sampleID, String date, String time){
         for (BySampleID sample : sampleIDList){
             if (sample.getSampleID().equals(sampleID) && sample.getDate(0).equals(date) && sample.getTime(0).equals(time)){

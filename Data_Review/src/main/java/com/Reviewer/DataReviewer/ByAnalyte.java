@@ -58,39 +58,42 @@ public class ByAnalyte {
             this.concCalib4 = concCalib4 != null ? concCalib4 : 0.0;
             this.concSamp4 = concSamp4 != null ? concSamp4 : 0.0;
     } 
-
     public String getSampleID() {
         return sampleID;
     }
-
     public Double getReportedConc() {
         return reportedConc;
     }
-
     public String getElem() {
         return elem;
     }
-
     public String getInsturmentID() {
         return userValue1;
     }
-
     public String getAnalyteName() {
         return analyte_waveLength;
     }
-
     public String getDate() {
         return date;
     }
-
     public String getTime() {
         return time;
     }
-
     public Double getConcCalib() {
         return concCalib;
     }
-
+    public Double getConcCalib1() {
+        return concCalib1;
+    }
+    public Double getConcCalib2() {
+        return concCalib2;
+    }
+    public Double getConcCalib3() {
+        return concCalib3;
+    }
+    public Double getConcCalib4() {
+        return concCalib4;
+    }
     @Override
     public String toString() {
         return "InnerList {" +

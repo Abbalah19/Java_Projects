@@ -1,0 +1,18 @@
+# Ignore temporary files
+*.log
+*.tmp
+*.swp
+*.swo
+
+# Ignore compiled class files
+*.class
+
+# Ignore SQLite database files
+SecondEye/src/main/resources/database/*.db
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore scrap file or directory
+/scrap

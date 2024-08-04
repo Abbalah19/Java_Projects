@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.io.File;
+import java.time.LocalDate;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -38,16 +39,23 @@ public class UI extends JFrame{
         frame.add(createOutputFilePanel());
         frame.add(createCheckBoxPanel());
         frame.add(createButtonPanel());
+
+        LocalDate date = LocalDate.now();
+        LocalDate endDate = LocalDate.of(2024, 12, 14);
         
 
         String password = JOptionPane.showInputDialog(frame, "Enter your password:");
         setPassword(password);
-        if ("secret".equals(password) || "AJ".equals(password) || "JLC".equals(password)) {
-            if ("secret".equals(password)) {
-                JOptionPane.showMessageDialog(frame, "Welcome to the Data Reviewer program!");
+        if ("secret".equals(password) || "AJ".equals(password) || "JLC".equals(password) || "bypass".equals(password)) {
+            if (date.isAfter(endDate) && !"bypass".equals(password)) {
+                JOptionPane.showMessageDialog(frame, "Your trial has expired, please contact the developer.");
+                System.exit(0);
+            }
+            else if ("AJ".equals(password) || "JLC".equals(password)) {
+                JOptionPane.showMessageDialog(frame, StringHelpers.getRandomMessage());
                 frame.setVisible(true);
             } else {
-            JOptionPane.showMessageDialog(frame, StringHelpers.getRandomMessage());
+            JOptionPane.showMessageDialog(frame, "Welcome, to Second Eye Data Reviewer.");
             frame.setVisible(true);
         }
         } else {
@@ -188,17 +196,19 @@ public class UI extends JFrame{
             "- Bugs -> ICP4 has slightly different ID's so it checks more points then I want, easy fix, I'll get to it \n"+
             "- Issue -> ICP4 data manager exports in little endian, not UTF-8..... why? WHY? Who exports files this way? "+
             " This will be a headache, don't expect a fix soon. ( try block -> if UTF-8 :), else :(   ?)\n\n"+
-            "Only the Sic check, negative values and IS check is implemented at this time. In most cases " +
+            "Only the Sic check, negative values and IS check are implemented at this time. In most cases " +
             "Instrument QC, Calibration and Rinse samples are ignored by the checks.\n\n"+
             "The current program uses a lot of string matching to identify what sample is being checked and "+
             "position matching from the prn file to identify what data from that sample is being checked. "+
-            "Changes to ID's or changes to data manager templates will break things. It will be a simple fix though.\n\n"+
+            "Changes to ID's or changes to data manager templates will break things. In most cases it will "+
+            "be a simple fix though.\n\n"+
             "\n\nAll the Crap you don't care about and probably won't read:\n\n"+
 
             "- Negative value check has been reworked to use a map from ReportingLevelMap class to check the data, "+
-            "this should help with future checks like CCB and calibration.\n\n"+
+            "this should help with future checks like CCB and calibration. I really should change the SIC check "+
+            "values to use a map system as well... It would turn 3 seperate classes into 1.\n\n"+
             
-            "- Set up custom messages for AJ and JLC, default password is 'secret'.\n\n"+
+            "- Set up custom messages, default password is 'secret'.\n\n"+
             
             "- The current password system is hardcoded and is only there becuase I was playing around. "+
             "Do not expect any meaningful security. If in some far distant time, I am bored then, I might "+
