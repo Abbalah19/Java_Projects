@@ -16,14 +16,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import com.secondeye.InputChecks;
 import com.secondeye.User;
 import com.secondeye.UserSessionEvent;
-import com.secondeye.database.DatabaseManager;
+import com.secondeye.database.AccountManager;
 
 public class LogInPage extends JFrame implements ActionListener {
     private JTextField userText;
     private JPasswordField passText;
-    private JFrame frame;
+    private JFrame frame = new JFrame();
 
     public LogInPage() {
         // Set up the frame
@@ -80,24 +81,24 @@ public class LogInPage extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String username = userText.getText();
-        String password = new String(passText.getPassword());
+        String username = InputChecks.sanitizeInput(userText.getText());
+        String password = InputChecks.sanitizeInput(new String(passText.getPassword()));
 
         try {
             // Encrypt the password
             String encryptedPassword;
             try {
-                encryptedPassword = DatabaseManager.encryptPassword(password);
+                encryptedPassword = AccountManager.encryptPassword(password);
             } catch (NoSuchAlgorithmException ex) {
                 System.err.println("Error encrypting password: " + ex.getMessage());
                 return; // or handle the exception accordingly
             }
 
             // Ensure the database connection is open
-            DatabaseManager.ensureDatabaseConnection();
+            AccountManager.ensureDatabaseConnection();
 
             // Validate user credentials
-            try (ResultSet rs = DatabaseManager.validateUserCredentials(username, encryptedPassword)) {
+            try (ResultSet rs = AccountManager.validateUserCredentials(username, encryptedPassword)) {
                 if (rs.next()) {
                     String role = rs.getString("role");
                     int firstLogin = rs.getInt("firstLogin");
@@ -115,12 +116,18 @@ public class LogInPage extends JFrame implements ActionListener {
     // Helper method in LogInPage.java
     private void handleFirstLogin(int firstLogin, String username) {
         if (firstLogin == 1) {
-            JOptionPane.showMessageDialog(frame, "This is your first login. Please change your password.");
+            JOptionPane.showMessageDialog(frame, 
+            "This is your first login. Please change your password.", 
+            "S-E Account Service", 
+            JOptionPane.INFORMATION_MESSAGE);
+
             this.dispose();
             new ChangePassword().setVisible(true);
         } else if (firstLogin == 0) {
-            JOptionPane.showMessageDialog(frame, "Welcome back, " + username + "!");
-            // new LandingPage().setVisible(true);
+            JOptionPane.showMessageDialog(frame, "Welcome back, " + username + "!",
+            "S-E Welcome", JOptionPane.INFORMATION_MESSAGE);
+            this.dispose();
+            new LandingPage().setVisible(true);
         }
     }
 }

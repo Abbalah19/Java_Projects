@@ -10,4 +10,8 @@ public class UserSessionEvent {
     public static User getCurrentUser() {
         return currentUser;
     }
+
+    public static void logOut() {
+        currentUser = null;
+    }
 }

@@ -1,14 +1,14 @@
 package com.secondeye;
 
-import com.secondeye.database.DatabaseManager;
-import com.secondeye.gui.LogInPage;
-
 import javax.swing.SwingUtilities;
+
+import com.secondeye.database.AccountManager;
+import com.secondeye.gui.LogInPage;
 
 public class Main {
     public static void main(String[] args) {
-        DatabaseManager dbManager = new DatabaseManager();
-        dbManager.connect();
+        AccountManager dbManager = new AccountManager();
+        AccountManager.connect();
         dbManager.createTableAndInsertDefaultUser();
         dbManager.close();
 
