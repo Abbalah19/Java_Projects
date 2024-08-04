@@ -14,5 +14,5 @@ SecondEye/src/main/resources/database/*.db
 .DS_Store
 Thumbs.db
 
-# Ignore scrap file or directory
-/scrap
+# Ignore scrap folder within SecondEye
+SecondEye/scrap/
