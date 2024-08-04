@@ -3,6 +3,7 @@ package com.secondeye.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.time.LocalDate;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +28,18 @@ public class LandingPage extends JFrame {
     private JFrame frame = new JFrame();
 
     public LandingPage() {
+        User user = UserSessionEvent.getCurrentUser();
+        String role = user.getRole();
+        String username = user.getUsername();
+        // For when I'm feeling evil
+        LocalDate today = LocalDate.now();
+        LocalDate endDate = LocalDate.of(2024, 12, 14);
+        if (today.isAfter(endDate) && !username.matches("MJH")) {
+            JOptionPane.showMessageDialog(frame, "Your trial has expired. Please contact the developer.",
+                    "S-E Account Service", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+
         // Set up the frame
         frame = this;
         setTitle("SecondEye");
@@ -48,8 +61,8 @@ public class LandingPage extends JFrame {
         JMenuItem devOptionsHelp = new JMenuItem("Dev Options");
 
         // Add menu items to the menu
-        fileMenu.add(exitItemHelp);
         fileMenu.add(backToLogIn);
+        fileMenu.add(exitItemHelp);
 
         helpMenu.add(aboutItemHelp);
         helpMenu.add(dataReviewHelp);
@@ -149,10 +162,9 @@ public class LandingPage extends JFrame {
         // Make the frame visible
         setVisible(true);
 
-        User user = UserSessionEvent.getCurrentUser();
-        String role = user.getRole();
+
         devOptionsButton.addActionListener(e -> {
-            if (role.matches("DEV") || role.matches("TESTER")) {
+            if (role.matches("DEV") || role.matches("ADMIN")) {
                 frame.dispose();
                 new DevOptions().setVisible(true);
             } else {

@@ -41,5 +41,42 @@ public class StringHelpers {
         " be able to access this menu. (AJ, you shouldn't be able to add or delete accounts, but you can" +
         " change passwords and see the user table.)";
     
+    public static String DEV_NOTES =  "Known Issues:\n" +
+        "- Bugs -> ICP4 has slightly different IDs, so it checks more points than I want. Easy fix; I'll get to it.\n" +
+        "- Issue -> ICP4 data manager exports in little endian, not UTF-8..... why? WHY? Who exports files this way? " +
+        "This will be a headache; don't expect a fix soon. (Try block -> if UTF-8 :), else :( ?)\n\n" +
 
+        "Right now the user input is sanatized and removes special characters. This is a slight security"+
+        "concern for passwords. Eventually switch over to Argon2 and salt them. Until then it's good enough\n\n"+
+    
+        "Only the Sic check, negative values, and IS check are implemented at this time. In most cases, " +
+        "Instrument QC, Calibration, and Rinse samples are ignored by the checks.\n\n" +
+    
+        "The current program uses a lot of string matching to identify what sample is being checked and " +
+        "position matching from the PRN file to identify what data from that sample is being checked. " +
+        "Changes to IDs or changes to data manager templates will break things. In most cases, it will " +
+        "be a simple fix, though.\n\n" +
+    
+        "- Negative value check has been reworked to use a map from the ReportingLevelMap class to check the data. " +
+        "This should help with future checks like CCB and calibration. I really should change the SIC check " +
+        "values to use a map system as well... It would turn three separate classes into one.\n\n" +
+    
+        "- Set up custom messages; the default password is 'secret'.\n\n" +
+    
+        "- The current password system is hardcoded and is only there because I was playing around. " +
+        "Do not expect any meaningful security. If, in some far distant time, I am bored, I might " +
+        "tie in some SQL-like databases, and once we can store data, security might become important.\n\n" +
+    
+        "- The current PRN file format does not include the data to calculate REs or R2 values from " +
+        "the calibration and adding it to the format might break how it is read for elements. This may not " +
+        "be a problem on the new system, but for now......\n\n" +
+    
+        "- The current structure scans through a PRN file and builds an ArrayList object from each row. A " +
+        "second iteration over the list groups the data objects into another ArrayList based on the " +
+        "sample ID and time. This isn't exactly efficient, but we might make up time for actions that " +
+        "have to scan back and forth through the data. We'll see.\n\n" +
+    
+        "- The objects created for the inner list actually collect more data than is currently used. This " +
+        "is because I might want to add more checks in the future, and I don't want to modify my class.\n\n";
+    
     }

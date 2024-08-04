@@ -13,6 +13,9 @@ import java.sql.Statement;
 
 public class AccountManager {
     public static Connection connection;
+    final private static String RELATIVEPATH = "./database/users.db";
+    final private static String TESTPATH = "./src/main/java/com/secondeye/database/users.db";
+    final private static String ABSOLUTEPATH = Paths.get(TESTPATH).toAbsolutePath().toString();
 
     public static void connect() {
 
@@ -20,10 +23,7 @@ public class AccountManager {
             // Load the SQLite JDBC driver (you must have the sqlite-jdbc dependency in your project)
             Class.forName("org.sqlite.JDBC");
 
-            // Create a connection to the database using a relative path
-            String relativePath = "src/main/java/com/secondeye/database/users.db";
-            String absolutePath = Paths.get(relativePath).toAbsolutePath().toString();
-            String url = "jdbc:sqlite:" + absolutePath;
+            String url = "jdbc:sqlite:" + ABSOLUTEPATH;
             connection = DriverManager.getConnection(url);
 
             System.out.println("Connection to SQLite has been established.");
@@ -88,9 +88,7 @@ public class AccountManager {
 
     public static void ensureDatabaseConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            String relativePath = "src/main/java/com/secondeye/database/users.db";
-            String absolutePath = Paths.get(relativePath).toAbsolutePath().toString();
-            String url = "jdbc:sqlite:" + absolutePath;
+            String url = "jdbc:sqlite:" + ABSOLUTEPATH;
             connection = DriverManager.getConnection(url);
         }
     }
@@ -121,7 +119,7 @@ public class AccountManager {
             String encryptedPassword = encryptPassword(newPassword);
             ensureDatabaseConnection();
             
-            String query = "UPDATE users SET password = ?, firstLogin = 0 WHERE username = ?";
+            String query = "UPDATE users SET password = ?, firstLogin = 1 WHERE username = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setString(1, encryptedPassword);
                 pstmt.setString(2, username);
@@ -129,6 +127,66 @@ public class AccountManager {
             }
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error encrypting password: " + e.getMessage(), e);
+        }
+    }
+
+    public static boolean checkForExistingUser(String username) throws SQLException {
+        ensureDatabaseConnection();
+        String query = "SELECT COUNT(*) FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                rs.next();
+                return rs.getInt(1) > 0;
+            }
+        }
+    }
+    
+    public static void addNewUser(String username, String password, String role) throws SQLException {
+        try {
+            String encryptedPassword = encryptPassword(password);
+            ensureDatabaseConnection();            
+            String query = "INSERT INTO users (username, password, firstLogin, role) VALUES (?, ?, 1, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setString(1, username);
+                pstmt.setString(2, encryptedPassword);
+                pstmt.setString(3, role);
+                pstmt.executeUpdate();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error encrypting password: " + e.getMessage(), e);
+        }
+    }
+
+    public static void deleteUser(String username) throws SQLException {
+        ensureDatabaseConnection();
+        String query = "DELETE FROM users WHERE username = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static String getUserTable() throws SQLException {
+        ensureDatabaseConnection();
+        String query = "SELECT * FROM users";
+        try (Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery(query)) {
+            StringBuilder table = new StringBuilder();
+            
+            // Add header
+            table.append(String.format("%-3s | %-10s | %-5s | %-3s%n", "ID", "Username", "Role", "FirstLogin?"));
+            table.append("-------------------------------------------------\n");
+            
+            // Add rows
+            while (rs.next()) {
+                table.append(String.format("%-3d | %-10s | %-5s | %-3d%n", 
+                    rs.getInt("id"), 
+                    rs.getString("username"), 
+                    rs.getString("role"), 
+                    rs.getInt("firstLogin")));
+            }
+            
+            return table.toString();
         }
     }
 }

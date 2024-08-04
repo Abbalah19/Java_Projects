@@ -10,7 +10,7 @@ public class Main {
         AccountManager dbManager = new AccountManager();
         AccountManager.connect();
         dbManager.createTableAndInsertDefaultUser();
-        dbManager.close();
+
 
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -18,5 +18,6 @@ public class Main {
                 new LogInPage().setVisible(true);
             }
         });
+        dbManager.close();
     }
 }
