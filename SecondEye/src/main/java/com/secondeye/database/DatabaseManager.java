@@ -86,6 +86,15 @@ public class DatabaseManager {
         }
     }
 
+    public static void ensureDatabaseConnection() throws SQLException {
+        if (connection == null || connection.isClosed()) {
+            String relativePath = "src/main/java/com/secondeye/database/users.db";
+            String absolutePath = Paths.get(relativePath).toAbsolutePath().toString();
+            String url = "jdbc:sqlite:" + absolutePath;
+            connection = DriverManager.getConnection(url);
+        }
+    }
+
     public static String encryptPassword(String password) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
         byte[] hash = md.digest(password.getBytes());
@@ -96,5 +105,13 @@ public class DatabaseManager {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    public static ResultSet validateUserCredentials(String username, String encryptedPassword) throws SQLException {
+        String query = "SELECT role, firstLogin FROM users WHERE username = ? AND password = ?";
+        PreparedStatement pstmt = connection.prepareStatement(query);
+        pstmt.setString(1, username);
+        pstmt.setString(2, encryptedPassword);
+        return pstmt.executeQuery();
     }
 }
