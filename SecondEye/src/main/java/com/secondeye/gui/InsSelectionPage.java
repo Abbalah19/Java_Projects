@@ -66,12 +66,12 @@ public class InsSelectionPage extends JFrame {
 
         selectICP2.addActionListener(e -> {
             frame.dispose();
-            //new ICP2_ICP3Page().setVisible(true);
+            new ICP2_ICP3Page().setVisible(true);
         });
 
         selectICP3.addActionListener(e -> {
             frame.dispose();
-            //new ICP2_ICP3Page().setVisible(true);
+            new ICP2_ICP3Page().setVisible(true);
         });
 
         selectBack.addActionListener(e -> {
