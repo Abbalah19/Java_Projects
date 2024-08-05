@@ -15,6 +15,8 @@ public class AccountManager {
     public static Connection connection;
     final private static String RELATIVEPATH = "./database/users.db";
     final private static String TESTPATH = "./src/main/java/com/secondeye/database/users.db";
+
+    // Change to relative path before packaging - keep on testPath for working in IDE
     final private static String ABSOLUTEPATH = Paths.get(TESTPATH).toAbsolutePath().toString();
 
     public static void connect() {
