@@ -13,7 +13,7 @@ import java.sql.Statement;
 
 public class AccountManager {
     public static Connection connection;
-    final private static String RELATIVEPATH = "./database/users.db";
+    final private static String RELATIVEPATH = "./Bundle/database/users.db";
     final private static String TESTPATH = "./src/main/java/com/secondeye/database/users.db";
 
     // Change to relative path before packaging - keep on testPath for working in IDE
@@ -121,7 +121,7 @@ public class AccountManager {
             String encryptedPassword = encryptPassword(newPassword);
             ensureDatabaseConnection();
             
-            String query = "UPDATE users SET password = ?, firstLogin = 1 WHERE username = ?";
+            String query = "UPDATE users SET password = ?, firstLogin = 0 WHERE username = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setString(1, encryptedPassword);
                 pstmt.setString(2, username);

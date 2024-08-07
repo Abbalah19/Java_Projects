@@ -1,19 +1,26 @@
 package com.secondeye.gui;
 
+
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-
 
 public class ICP2_ICP3Page extends JFrame {
     private JFrame frame = new JFrame();
@@ -72,6 +79,7 @@ public class ICP2_ICP3Page extends JFrame {
         panel.add(button);
         return panel;
     }
+    
     private JPanel createOutputFilePanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new FlowLayout());
@@ -87,13 +95,16 @@ public class ICP2_ICP3Page extends JFrame {
             if (metalsDataDir.exists() && metalsDataDir.isDirectory()) {
                 fileChooser.setCurrentDirectory(metalsDataDir);
             } else {
-                fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+                fileChooser.setCurrentDirectory(new File(System.getProperty("user.dir")));
             }
 
             int result = fileChooser.showSaveDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 outputFilePath = selectedFile.getAbsolutePath();
+                if (!outputFilePath.endsWith(".txt")) {
+                    outputFilePath += ".txt";
+                }
                 textField.setText(outputFilePath);
             }
         });
@@ -101,6 +112,7 @@ public class ICP2_ICP3Page extends JFrame {
         panel.add(button);
         return panel;
     }
+    
     private JPanel createCheckBoxPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(3, 3)); // 3 rows, 3 columns
@@ -120,6 +132,7 @@ public class ICP2_ICP3Page extends JFrame {
         panel.add(internalSTDCheckBox);
         return panel;
     }
+    
     private JPanel createButtonPanel() {
             JPanel panel = new JPanel();
             panel.setLayout(new FlowLayout());
@@ -127,7 +140,7 @@ public class ICP2_ICP3Page extends JFrame {
             JButton button = new JButton("Review Data");
             JButton backToSelection = new JButton("Back to Selection");
             button.addActionListener(e -> {
-                if (inputFilePath == null || outputFilePath == null) {
+                if (inputFilePath == null) {
                     JOptionPane.showMessageDialog(frame, "Please select input and output files");
                 } else {
                     boolean sic = sicCheckBox.isSelected();
@@ -135,10 +148,37 @@ public class ICP2_ICP3Page extends JFrame {
                     boolean overRange = overRangeCheckBox.isSelected();
                     boolean negative = negativeCheckBox.isSelected();
                     boolean internalSTD = internalSTDCheckBox.isSelected();
-                    //com.Reviewer.DataReviewer.Main.parseData(inputFilePath);
-                    //com.Reviewer.DataReviewer.Main.reviewData(outputFilePath+".txt", sic, CCV_CCB, overRange, calibration, 
-                    //    negative, internalSTD);
-                    JOptionPane.showMessageDialog(frame, "Data reviewed successfully");
+
+                    Object[] options = {"View Report", "Export Report", "Cancel"};
+                    int choice = JOptionPane.showOptionDialog(
+                        frame,
+                        "What would you like to do?",
+                        "Data Reviewed",
+                        JOptionPane.YES_NO_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        options,
+                        options[2]
+                    );
+
+                    switch (choice){
+                        case JOptionPane.YES_OPTION:    // View Report
+                            com.secondeye.ICP2_ICP3_DataParse.parseData(inputFilePath);
+                            com.secondeye.ICP2_ICP3_DataParse.reviewData("",
+                            false, sic, CCV_CCB, overRange, negative, internalSTD);
+                            break;
+                        case JOptionPane.NO_OPTION:     // Export Report
+                            if (outputFilePath == null) {
+                                JOptionPane.showMessageDialog(frame, "Please select output path");
+                            } else {
+                                com.secondeye.ICP2_ICP3_DataParse.parseData(inputFilePath);
+                                com.secondeye.ICP2_ICP3_DataParse.reviewData(outputFilePath,
+                                true, sic, CCV_CCB, overRange, negative, internalSTD);
+                            }
+                            break;
+                        case JOptionPane.CANCEL_OPTION: // Cancel
+                            break;
+                    }                    
                 }
             });
 
@@ -153,6 +193,26 @@ public class ICP2_ICP3Page extends JFrame {
     
     private void setUpMenu() {
         MenuBarUtil.setupMenuBar(this);
+    }
+
+    public static void reportPage(String report) {
+        JTextArea textArea = new JTextArea(report);
+        textArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.RAISED), new EmptyBorder(10, 10, 10, 10))); // Add a raised beveled border with padding
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(400, 500));
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+    
+        // Create a resizable JDialog
+        JDialog dialog = new JDialog((Frame) null, "Reviewer Report", true);
+        dialog.getContentPane().add(scrollPane);
+        dialog.setSize(750, 600);
+        dialog.setResizable(true);
+        dialog.setLocationRelativeTo(null); // Center the dialog
+        dialog.setVisible(true);
     }
 
 }
