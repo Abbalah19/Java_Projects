@@ -7,16 +7,25 @@ import com.secondeye.ReportingLevelMap.ThresholdMatrixPair;
 public class NegativeReview {
     public String msgOver = "";
 
-    public void negChecker(String analyteName, double reportedConc){
+    public void negChecker(String analyteName, double reportedConc, boolean sample) {
         String msg = "";
         boolean isNegative = false;
 
         Map<String, ThresholdMatrixPair[]> thresholdMap = ReportingLevelMap.getThresholdMap();
         ThresholdMatrixPair[] thresholds = thresholdMap.get(analyteName);
 
-        if (thresholds != null) {
+        if (thresholds != null && sample) {
             for (ThresholdMatrixPair pair : thresholds) {
                 if (reportedConc <= -5 * pair.threshold) {
+                    isNegative = true;
+                    msg += analyteName + " at " + reportedConc + " is too negative for " + pair.matrix + " limits\n";
+                }
+            }
+        }
+
+        else if (thresholds != null && !sample) {
+            for (ThresholdMatrixPair pair : thresholds) {
+                if (reportedConc <= -2 * pair.threshold) {
                     isNegative = true;
                     msg += analyteName + " at " + reportedConc + " is too negative for " + pair.matrix + " limits\n";
                 }

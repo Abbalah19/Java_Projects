@@ -2,8 +2,8 @@ package com.secondeye;
 
 public class StringHelpers {
 
-    public static String newSample = "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Sample >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
-    public static String seperator = "-----------------------------------------------------------------------------------";
+    public static String newSample = "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Sample >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
+    public static String seperator = "---------------------------------------------------------------------------------------";
 
     public static String helpAbout = " ~ SecondEye V1.0 ~\n\nSecondEye is a software application that allows users to"+
         " review data and perform lab calculations. It is in development, so do not trust its results"+

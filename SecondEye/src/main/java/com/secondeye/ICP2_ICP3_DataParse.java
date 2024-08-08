@@ -124,7 +124,7 @@ public class ICP2_ICP3_DataParse {
                     builtMSG.append(pagePrinters(3));
                 }
                 if (sic) {
-                    msg = " ~ Sic Check ~ \n" + sicReview(sample);
+                    msg = " ~ Sic Check " + sicReview(sample);
                     builtMSG.append(msg).append("\n");
                     builtMSG.append(pagePrinters(3));
                 }
@@ -151,6 +151,10 @@ public class ICP2_ICP3_DataParse {
                 }
                 if (negative && sample.getSampleID().matches("SEQ-CCB.*")) {
                     msg = " ~ Negative Check ~ \n" + negativeReview(sample);
+                    builtMSG.append(msg).append("\n");
+                    builtMSG.append(pagePrinters(3));
+
+                    msg = " ~ Blank Hit Check ~ \n" + reportingLevelReview(sample);
                     builtMSG.append(msg).append("\n");
                     builtMSG.append(pagePrinters(3));
                 }
@@ -242,13 +246,34 @@ public class ICP2_ICP3_DataParse {
                 }
             return msg;
         }
-    private static String negativeReview(BySampleID sample){
-        NegativeReview neg = new NegativeReview();
+    private static String reportingLevelReview(BySampleID sample){
+        ReportingLevelReview hit = new ReportingLevelReview();
         String msg = "";
+
         for (ByAnalyte analyte : sample.getAnalytes()){
             double reportedConc = analyte.getReportedConc();
             String analyteName = analyte.getElem();
-            neg.negChecker(analyteName, reportedConc);
+            hit.reportingLevelReview(analyteName, reportedConc);
+            msg += hit.getMsg();
+            hit.setMsgOver("");
+        }
+        if (msg.isEmpty()){
+            msg = "No Blank Hits Detected.";
+        }
+        return msg;
+    }
+    private static String negativeReview(BySampleID sample){
+        NegativeReview neg = new NegativeReview();
+        String msg = "";
+        boolean isSample = true;
+        if (sample.getSampleID().matches("SEQ-CCB.*")) {
+            isSample = false;
+        }
+
+        for (ByAnalyte analyte : sample.getAnalytes()){
+            double reportedConc = analyte.getReportedConc();
+            String analyteName = analyte.getElem();
+            neg.negChecker(analyteName, reportedConc, isSample);
             msg += neg.getMsg();
             neg.setMsgOver("");
         }
@@ -265,7 +290,7 @@ public class ICP2_ICP3_DataParse {
         
             for (ByAnalyte analyte : sample.getAnalytes()) {
                 
-                double reportedConc = analyte.getReportedConc();
+                double reportedConc = analyte.getConcCalib();
                 String analyteName = analyte.getElem();
                 if ("ICP2".equals(analyte.getInsturmentID())) {
                     icp2.checkAndBuildMessage(analyteName, reportedConc);
@@ -283,7 +308,7 @@ public class ICP2_ICP3_DataParse {
                     icp4.setMessage("");
                 }               
             }
-            if (msg.isEmpty()) {
+            if (msg.matches("Last Updated:.*")) {
                 msg = "SIC Check Passed.";
             }
             return msg;

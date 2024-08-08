@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -36,7 +37,7 @@ public class ICP2_ICP3Page extends JFrame {
     public ICP2_ICP3Page() {
         // Set up the frame
         frame = this;
-        setTitle("SecondEye - ICP2/ICP3 Review");
+        setTitle("SecondEye - ICP-OES Review");
         setSize(450, 400);
         setLayout(new GridLayout(0,1));
         add(createInputFilePanel());
@@ -143,6 +144,13 @@ public class ICP2_ICP3Page extends JFrame {
                 if (inputFilePath == null) {
                     JOptionPane.showMessageDialog(frame, "Please select input and output files");
                 } else {
+
+                    try {
+                        inputFilePath = com.secondeye.EncodingDetection.convertToUTF8IfNeeded(inputFilePath);
+                    } catch (IOException formatConversionError) {
+                        // Handle the exception or rethrow it
+                        formatConversionError.printStackTrace();
+                    }
                     boolean sic = sicCheckBox.isSelected();
                     boolean CCV_CCB = CCV_CCBCheckBox.isSelected();
                     boolean overRange = overRangeCheckBox.isSelected();
@@ -209,7 +217,7 @@ public class ICP2_ICP3Page extends JFrame {
         // Create a resizable JDialog
         JDialog dialog = new JDialog((Frame) null, "Reviewer Report", true);
         dialog.getContentPane().add(scrollPane);
-        dialog.setSize(750, 600);
+        dialog.setSize(800, 700);
         dialog.setResizable(true);
         dialog.setLocationRelativeTo(null); // Center the dialog
         dialog.setVisible(true);

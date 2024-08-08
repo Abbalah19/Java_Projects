@@ -32,6 +32,7 @@ public class DevOptions extends JFrame {
         // Get the User object from UserSessionEvent
         User user = UserSessionEvent.getCurrentUser();
         String role = user.getRole();
+        String username = user.getUsername();
 
         // Set up the frame
         frame = this;
@@ -68,7 +69,7 @@ public class DevOptions extends JFrame {
         setVisible(true);
 
         newUser.addActionListener(e -> {
-            if (role.equals("DEV")) {        
+            if (role.equals("DEV") || role.equals("ADMIN")) {        
                 JPanel newUserPanel = new JPanel(new GridLayout(0,1));
                 newUserPanel.add(new JLabel("Username:"));
                 JTextField usernameField = new JTextField();
@@ -180,7 +181,7 @@ public class DevOptions extends JFrame {
                 String usernameForPasswordChange = InputChecks.sanitizeInput(usernameField.getText());
                 String passwordForPasswordChange = InputChecks.sanitizeInput(new String(passwordField.getPassword()));
                 try {
-                    if (usernameForPasswordChange.matches("MJH")) {
+                    if (usernameForPasswordChange.matches("MJH") && !username.matches("MJH")) {
                         JOptionPane.showMessageDialog(frame,
                         "You'll Have to do better than that if you want to mess with my account.",
                         "S-E Account Service", JOptionPane.ERROR_MESSAGE);

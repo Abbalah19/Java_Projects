@@ -15,6 +15,8 @@ repositories {
 
 dependencies {
     implementation 'org.xerial:sqlite-jdbc:3.36.0.3'
+    implementation 'org.apache.tika:tika-core:2.4.1'
+    implementation 'org.apache.tika:tika-parsers-standard-package:2.4.1'
 }
 
 application {
@@ -31,10 +33,12 @@ jar {
 
 task fatJar(type: Jar) {
     exclude 'scrap/**'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes 'Main-Class': 'com.secondeye.Main'
     }
     archiveBaseName = project.name + '-all'
     from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
     with jar
 }
