@@ -90,89 +90,110 @@ public class ICP2_ICP3_DataParse {
      * 5. Clear the built up sample strings and start the next iteration of the for loop.
      * 6. After the for loop is done, print the footer to the output file and close the print writer.
      */
-    public static void reviewData(String outputFilePath, boolean export, boolean sic,
+public static void reviewData(String outputFilePath, boolean export, boolean sic,
         boolean CCV_CCB, boolean overRange, boolean negative, boolean internalSTD) {
-        String msg = "";
-        StringBuilder builtMSG = new StringBuilder("Data Review V2.1\n\n");
-        StringBuilder runningReport = new StringBuilder();
+    String msg = "";
+    StringBuilder builtMSG = new StringBuilder("Data Review V2.1\n\n");
+    StringBuilder runningReport = new StringBuilder();
 
-        for (BySampleID sample : sampleIDList) {
-            String sampleID = sample.getSampleID();
-            String insturmentID = sample.getInsturmentID(0) != null ? sample.getInsturmentID(0) : "ICP";
-            String date = sample.getDate(0);
-            String time = sample.getTime(0);
+    for (BySampleID sample : sampleIDList) {
+        String sampleID = sample.getSampleID();
+        String insturmentID = sample.getInsturmentID(0) != null ? sample.getInsturmentID(0) : "ICP";
+        String date = sample.getDate(0);
+        String time = sample.getTime(0);
 
-            if (!sample.getSampleID().matches("Cal Blank@.*") &&
-                !sample.getSampleID().matches("SEQ.*") &&
-                !sample.getSampleID().matches("RINSE.*") &&
-                !sample.getSampleID().matches("ICV-RR")) {
-                
-                builtMSG.append(pagePrinters(1));
-                builtMSG.append("~ ").append(sampleID).append("  ").append(insturmentID)
-                    .append("   ").append(date).append("    ").append(time).append(" ~")
-                    .append("\n");
-                builtMSG.append(pagePrinters(3));
-
-                if (internalSTD) {
-                    msg = " ~ Internal Standard Check ~    \n" + internalSTD(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-                if (negative) {
-                    msg = " ~ Negative Check ~ \n" + negativeReview(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-                if (sic) {
-                    msg = " ~ Sic Check " + sicReview(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-            }
-            if (CCV_CCB && (sample.getSampleID().matches("SEQ-CCV.*") || sample.getSampleID().matches("SEQ-CCB.*"))) {
-                builtMSG.append(pagePrinters(1));
-                builtMSG.append("~ ").append(sampleID).append("  ").append(insturmentID).append("   ")
-                    .append(date).append("    ").append(time).append(" ~\n");
-                builtMSG.append(pagePrinters(3));
-
-                if (internalSTD) {
-                    msg = " ~ Internal Standard Check ~    \n" + internalSTD(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-                if (sample.getSampleID().matches("SEQ-CCV.*")) {
-                    msg = " ~ Recovery Check ~ \n" + CCV_RecoveryCheck(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-
-                    msg = " ~ CCV RSD Check ~ \n" + CCV_RSD(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-                if (negative && sample.getSampleID().matches("SEQ-CCB.*")) {
-                    msg = " ~ Negative Check ~ \n" + negativeReview(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-
-                    msg = " ~ Blank Hit Check ~ \n" + reportingLevelReview(sample);
-                    builtMSG.append(msg).append("\n");
-                    builtMSG.append(pagePrinters(3));
-                }
-            }
-            runningReport.append(builtMSG);
-            builtMSG.setLength(0); // Clear the StringBuilder
+        String IECUpdate = "";
+        switch (insturmentID) {
+            case "ICP2":
+                IECUpdate = ICP2_Sic.getLastUpdated();
+                break;
+            case "ICP3":
+                IECUpdate = ICP3_Sic.getLastUpdated();
+                break;
+            case "ICP - 4":
+                IECUpdate = ICP4_Sic.getLastUpdated();
+                break;
         }
 
-        if (export) {
-            try (Writers write = new Writers(outputFilePath, true)) {
-                write.writeLine(runningReport.toString());
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (!sample.getSampleID().matches("Cal Blank@.*") &&
+            !sample.getSampleID().matches("SEQ.*") &&
+            !sample.getSampleID().matches("RINSE.*") &&
+            !sample.getSampleID().matches("ICV-RR") &&
+            !sample.getSampleID().matches("CCV-RR")) {
+            
+            builtMSG.append(pagePrinters(1));
+            builtMSG.append("~ ").append(sampleID).append("  ").append(insturmentID)
+                .append("   ").append(date).append("    ").append(time).append(" ~")
+                .append("\n");
+            builtMSG.append(pagePrinters(3));
+
+            if (internalSTD) {
+                msg = " ~ Internal Standard Check ~    \n" + internalSTD(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
             }
-        } else {
-            com.secondeye.gui.ICP2_ICP3Page.reportPage(runningReport.toString());
+            if (negative) {
+                msg = " ~ Negative Check ~ \n" + negativeReview(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+            }
+            if (sic &&
+                !sample.getSampleID().matches(".*BLANK.*") &&
+                !sample.getSampleID().matches(".*LCS.*") &&
+                !sample.getSampleID().matches(".*BS.*") &&
+                !sample.getSampleID().matches(".*MS.*") &&
+                !sample.getSampleID().matches(".*DUP.*") &&
+                !sample.getSampleID().matches(".*PS.*")) {
+
+                msg = " ~ Sic Check " + IECUpdate + " ~\n" + sicReview(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+            }
         }
+        if (CCV_CCB && (sample.getSampleID().matches("SEQ-CCV.*") || sample.getSampleID().matches("SEQ-CCB.*"))) {
+            builtMSG.append(pagePrinters(1));
+            builtMSG.append("~ ").append(sampleID).append("  ").append(insturmentID).append("   ")
+                .append(date).append("    ").append(time).append(" ~\n");
+            builtMSG.append(pagePrinters(3));
+
+            if (internalSTD) {
+                msg = " ~ Internal Standard Check ~    \n" + internalSTD(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+            }
+            if (sample.getSampleID().matches("SEQ-CCV.*")) {
+                msg = " ~ Recovery Check ~ \n" + CCV_RecoveryCheck(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+
+                msg = " ~ CCV RSD Check ~ \n" + CCV_RSD(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+            }
+            if (negative && sample.getSampleID().matches("SEQ-CCB.*")) {
+                msg = " ~ Negative Check ~ \n" + negativeReview(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+
+                msg = " ~ Blank Hit Check ~ \n" + reportingLevelReview(sample);
+                builtMSG.append(msg).append("\n");
+                builtMSG.append(pagePrinters(3));
+            }
+        }
+        runningReport.append(builtMSG);
+        builtMSG.setLength(0); // Clear the StringBuilder
     }
+
+    if (export) {
+        try (Writers write = new Writers(outputFilePath, true)) {
+            write.writeLine(runningReport.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } else {
+        com.secondeye.gui.ICP2_ICP3Page.reportPage(runningReport.toString());
+    }
+}
 
     private static String CCV_RecoveryCheck(BySampleID sample){
         CCV_Recovery ccv = new CCV_Recovery();
@@ -185,7 +206,7 @@ public class ICP2_ICP3_DataParse {
             ccv.setMessage("");
         }
         if (msg.isEmpty()){
-            msg = "CCV Check Passed.";
+            msg = "  CCV Check Passed.";
         }
         return msg;
     }
@@ -217,7 +238,7 @@ public class ICP2_ICP3_DataParse {
             } 
         }
         if (!failure){
-            msg = "CCV RSD Passed.";
+            msg = "  CCV RSD Passed.";
         }
         return msg;
     }
@@ -242,7 +263,7 @@ public class ICP2_ICP3_DataParse {
                 }
             }
                 if (!failure){
-                    msg = "Internal Standard Passed.";
+                    msg = "  Internal Standard Passed.";
                 }
             return msg;
         }
@@ -258,7 +279,7 @@ public class ICP2_ICP3_DataParse {
             hit.setMsgOver("");
         }
         if (msg.isEmpty()){
-            msg = "No Blank Hits Detected.";
+            msg = "  No Blank Hits Detected.";
         }
         return msg;
     }
@@ -278,7 +299,7 @@ public class ICP2_ICP3_DataParse {
             neg.setMsgOver("");
         }
         if (msg.isEmpty()){
-            msg = "Negative Check Passed.";
+            msg = "  Negative Check Passed.";
         }
         return msg;
     }
@@ -308,8 +329,8 @@ public class ICP2_ICP3_DataParse {
                     icp4.setMessage("");
                 }               
             }
-            if (msg.matches("Last Updated:.*")) {
-                msg = "SIC Check Passed.";
+            if (msg.matches("")){ 
+                msg = "  SIC Check Passed.";
             }
             return msg;
         }

@@ -79,7 +79,7 @@ public class DevOptions extends JFrame {
                 JPasswordField passwordField = new JPasswordField();
                 newUserPanel.add(passwordField);
         
-                newUserPanel.add(new JLabel("Role (DEV, ADMIN, USER):"));
+                newUserPanel.add(new JLabel("Role (ADMIN or USER):"));
                 JTextField roleField = new JTextField();
                 newUserPanel.add(roleField);
         
@@ -92,8 +92,8 @@ public class DevOptions extends JFrame {
                     String usernameForNewUser = InputChecks.sanitizeInput(usernameField.getText());
                     String passwordForNewUser = InputChecks.sanitizeInput(new String(passwordField.getPassword()));
                     String roleForNewUser = InputChecks.sanitizeInput(roleField.getText().toUpperCase());
-                    if (!roleForNewUser.equals("DEV") && !roleForNewUser.equals("ADMIN") && !roleForNewUser.equals("USER")) {
-                        JOptionPane.showMessageDialog(frame, "User role must be DEV, ADMIN or USER",
+                    if (!roleForNewUser.equals("ADMIN") && !roleForNewUser.equals("USER")) {
+                        JOptionPane.showMessageDialog(frame, "User role must be ADMIN or USER",
                         "S-E Account Service", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
@@ -121,7 +121,7 @@ public class DevOptions extends JFrame {
         });
 
         deleteUser.addActionListener(e -> {
-            if (role.equals("DEV")) {
+            if (role.equals("DEV") || role.equals("ADMIN")) {
                 JPanel deleteUserPanel = new JPanel(new GridLayout(0, 1));
                 deleteUserPanel.add(new JLabel("Username:"));
                 JTextField usernameField = new JTextField();
@@ -197,7 +197,7 @@ public class DevOptions extends JFrame {
                     JOptionPane.YES_NO_OPTION);
 
                     if (changeResult == JOptionPane.YES_OPTION){
-                    AccountManager.updatePassword(usernameForPasswordChange, passwordForPasswordChange);
+                    AccountManager.changePassword(usernameForPasswordChange, passwordForPasswordChange);
                     JOptionPane.showMessageDialog(frame, "Password Changed.", "S-E Account Service", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } catch (Exception ex) {

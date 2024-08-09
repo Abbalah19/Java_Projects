@@ -30,6 +30,7 @@ public class MenuBarUtil {
         JMenuItem dataReviewHelp = new JMenuItem("Data Review");
         JMenuItem labCalculationsHelp = new JMenuItem("Lab Calculations");
         JMenuItem devOptionsHelp = new JMenuItem("Dev Options");
+        JMenuItem patchNotes = new JMenuItem("Patch Notes");
 
         // Add menu items to the menu
         fileMenu.add(backToLogIn);
@@ -39,6 +40,7 @@ public class MenuBarUtil {
         helpMenu.add(dataReviewHelp);
         helpMenu.add(labCalculationsHelp);
         helpMenu.add(devOptionsHelp);
+        helpMenu.add(patchNotes);
 
         // Add menus to the menu bar
         menuBar.add(fileMenu);
@@ -102,6 +104,19 @@ public class MenuBarUtil {
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
             JOptionPane.showMessageDialog(frame, scrollPane, "Dev Options Help", JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        patchNotes.addActionListener(e -> {
+            JTextArea textArea = new JTextArea(StringHelpers.patchNotes);
+            textArea.setEditable(false);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            textArea.setBorder(new CompoundBorder(new BevelBorder(BevelBorder.RAISED), new EmptyBorder(10, 10, 10, 10))); // Add a raised beveled border with padding
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            scrollPane.setPreferredSize(new Dimension(500, 500));
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+            JOptionPane.showMessageDialog(frame, scrollPane, "Patch Notes", JOptionPane.INFORMATION_MESSAGE);
         });
     }
 }

@@ -17,7 +17,7 @@ public class AccountManager {
     final private static String TESTPATH = "./src/main/java/com/secondeye/database/users.db";
 
     // Change to relative path before packaging - keep on testPath for working in IDE
-    final private static String ABSOLUTEPATH = Paths.get(TESTPATH).toAbsolutePath().toString();
+    final private static String ABSOLUTEPATH = Paths.get(RELATIVEPATH).toAbsolutePath().toString();
 
     public static void connect() {
 
@@ -122,6 +122,22 @@ public class AccountManager {
             ensureDatabaseConnection();
             
             String query = "UPDATE users SET password = ?, firstLogin = 0 WHERE username = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setString(1, encryptedPassword);
+                pstmt.setString(2, username);
+                pstmt.executeUpdate();
+            }
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException("Error encrypting password: " + e.getMessage(), e);
+        }
+    }
+
+    public static void changePassword(String username, String newPassword) throws SQLException {
+        try {
+            String encryptedPassword = encryptPassword(newPassword);
+            ensureDatabaseConnection();
+            
+            String query = "UPDATE users SET password = ?, firstLogin = 1 WHERE username = ?";
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
                 pstmt.setString(1, encryptedPassword);
                 pstmt.setString(2, username);

@@ -5,11 +5,27 @@ public class StringHelpers {
     public static String newSample = "\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Sample >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>";
     public static String seperator = "---------------------------------------------------------------------------------------";
 
-    public static String helpAbout = " ~ SecondEye V1.0 ~\n\nSecondEye is a software application that allows users to"+
+    public static String patchNotes = " ~ Version 1.3 ~\n" +
+        " - Added this record to track changes.\n" +
+        " - Allowed admins to create new accounts.\n" +
+        " - Removed the ability to create dev accounts.\n" +
+        " - Fixed issue with file path not being stored when user pressed [Review Data] button; now" +
+        "   the user can press the button back-to-back and the report will generate.\n" +
+        " - Changed how the last updated String is stored in SIC checks and fixed the passing message" +
+        "   for SIC checks.\n" +
+        " - Separated methods for updating passwords and first-time login password changes; now it" +
+        "   properly tracks when users need to change their passwords.\n" +
+        " - Changed some spacing on review strings, especially for SIC check results.\n" +
+        " - Excluded batch QC samples (Blank, BS, BSD, MS, DUP, PS) from SIC checks.\n" +
+        " - Added pop-up message for exporting results to a text file.\n" +
+        " - Changed the apache dependencies to only use the parser-text-module (shrunk jar size by nearly 40,000kb).\n";
+
+    
+    public static String helpAbout = " ~ SecondEye V1.3 ~\n\nSecondEye is a software application that allows users to"+
         " review data and perform lab calculations. It is in development, so do not trust its results"+
         " without verifying them yourself.\n\nThis is not a replacement for traditional review practices"+
         " and should only be used as a tool to assist already trained reviewers in the review process.\n\n"+
-        "This is version 1.0 and is the first to support a relational database, a user login system, and"+
+        "This is version 1.3 and supports a relational database, a user login system, and"+
         " user roles. I have never tried to make a program that needs to support concurrent users before,"+
         " so let's see how it goes.\n\nAJ, you have special permissions to test out new components before I"+
         " whitelist them for general use. Please let me know if you find any bugs or have any suggestions.";
@@ -29,50 +45,34 @@ public class StringHelpers {
         " limit and does take into account the matrix-specific reporting limits.\n\nInternal Standard - This will check" +
         " the internal standard recovery for all samples. It will check Y recovery to ensure it is between 50-150% recovery." +
         " It will check both the Axial and Radial recovery.\n\nJust check the boxes you want to include on the report, supply" +
-        " the input file and output file, and click generate report.\n\n\nStill in the works:\n - Sort out the encoding for ICP4\n" +
-        " - Add the ability to check for being over HCV range\n - Add Hg and MS options\n - *Integrate Sic-Check to a database*";
-    
+        " the input file and output file, and click generate report.\n\n\nStill in the works:\n" +
+        " - Add the ability to check for being over HCV range\n - Add Hg and MS options\n - *Integrate Sic-Check to a database*"+
+        " - TESTING TESTING TESTING\n\n";    
 
-    public static String helpLabCalculations = " ~ Lab Calculations ~\n\nLab Calculations contains simple equations to help" +
-        " with basic lab work. It will allow you to calculate:\n\n - Percent Recovery\n - Standard Dilutions\n - Sample Dilutions\n" +
-        " This is probably the easiest thing for me to add too, so let me know if you have any other calculations you would like." +
-        " More information on specific calculations can be found on the respective calculations page.";
+    public static String helpLabCalculations = " ~ Lab Calculations (Coming Soon) ~\n\n ";
     
 
     public static String helpDevOptions = " ~ Dev Options ~\n\nDev Options contains features that are" +
-        " either for account management or are not ready for general use. Basically, only AJ and I should" +
-        " be able to access this menu. (AJ, you shouldn't be able to add or delete accounts, but you can" +
-        " change passwords and see the user table.)";
+        " for account management. Basically, only AJ and I should be able to access this menu. (AJ, you" +
+        " shouldn't be able to delete accounts, but you can create new accounts, change passwords and see" +
+        " the user table.)";
     
-    public static String DEV_NOTES =  "Known Issues:\n" +
-        "- Bugs -> ICP4 has slightly different IDs, so it checks more points than I want. Easy fix; I'll get to it.\n" +
-        "- Issue -> ICP4 data manager exports in little endian, not UTF-8..... why? WHY? Who exports files this way? " +
-        "This will be a headache; don't expect a fix soon. (Try block -> if UTF-8 :), else :( ?)\n\n" +
-
+    public static String DEV_NOTES =  "Notes to Self:\n" +
         "Right now the user input is sanatized and removes special characters. This is a slight security"+
-        "concern for passwords. Eventually switch over to Argon2 and salt them. Until then it's good enough\n\n"+
+        " concern for passwords. Eventually switch over to Argon2 and salt them. Until then it's good enough\n\n"+
     
-        "Only the Sic check, negative values, and IS check are implemented at this time. In most cases, " +
-        "Instrument QC, Calibration, and Rinse samples are ignored by the checks.\n\n" +
+        "The current program uses a lot of string matching to identify what sample is being checked and" +
+        " position matching from the PRN file to identify what data from that sample is being checked." +
+        " Changes to IDs or changes to data manager templates will break things. In most cases, it will" +
+        " be a simple fix, though.\n\n" +
     
-        "The current program uses a lot of string matching to identify what sample is being checked and " +
-        "position matching from the PRN file to identify what data from that sample is being checked. " +
-        "Changes to IDs or changes to data manager templates will break things. In most cases, it will " +
-        "be a simple fix, though.\n\n" +
+        "- Negative value check has been reworked to use a map from the ReportingLevelMap class to check the data." +
+        " This should help with checks like CCB and calibration. I really should change the SIC check" +
+        " values to use a map system as well... It would turn three separate classes into one...\n\n" +
     
-        "- Negative value check has been reworked to use a map from the ReportingLevelMap class to check the data. " +
-        "This should help with future checks like CCB and calibration. I really should change the SIC check " +
-        "values to use a map system as well... It would turn three separate classes into one.\n\n" +
-    
-        "- Set up custom messages; the default password is 'secret'.\n\n" +
-    
-        "- The current password system is hardcoded and is only there because I was playing around. " +
-        "Do not expect any meaningful security. If, in some far distant time, I am bored, I might " +
-        "tie in some SQL-like databases, and once we can store data, security might become important.\n\n" +
-    
-        "- The current PRN file format does not include the data to calculate REs or R2 values from " +
-        "the calibration and adding it to the format might break how it is read for elements. This may not " +
-        "be a problem on the new system, but for now......\n\n" +
+        "- The current PRN file format does not include the data to calculate REs or R2 values. Trying to add it" +
+        " too the format might break how it is read for element. This may not be a problem on the new system," +
+        " but for now......\n\n" +
     
         "- The current structure scans through a PRN file and builds an ArrayList object from each row. A " +
         "second iteration over the list groups the data objects into another ArrayList based on the " +

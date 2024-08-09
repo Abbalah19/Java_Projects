@@ -26,6 +26,7 @@ import javax.swing.border.EmptyBorder;
 public class ICP2_ICP3Page extends JFrame {
     private JFrame frame = new JFrame();
     private String inputFilePath;
+    private String savedFilePath;
     private String outputFilePath;
     private JCheckBox sicCheckBox;
     private JCheckBox CCV_CCBCheckBox;
@@ -73,6 +74,7 @@ public class ICP2_ICP3Page extends JFrame {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
                 inputFilePath = selectedFile.getAbsolutePath();
+                savedFilePath = inputFilePath;
                 textField.setText(inputFilePath);
             }
         });
@@ -141,16 +143,20 @@ public class ICP2_ICP3Page extends JFrame {
             JButton button = new JButton("Review Data");
             JButton backToSelection = new JButton("Back to Selection");
             button.addActionListener(e -> {
-                if (inputFilePath == null) {
-                    JOptionPane.showMessageDialog(frame, "Please select input and output files");
-                } else {
 
+                if (inputFilePath == null) {
+                    JOptionPane.showMessageDialog(frame, "Please select an input file");
+                } else {
+                    inputFilePath = savedFilePath;
+                    System.out.println("before filepath: " + inputFilePath);
                     try {
                         inputFilePath = com.secondeye.EncodingDetection.convertToUTF8IfNeeded(inputFilePath);
                     } catch (IOException formatConversionError) {
                         // Handle the exception or rethrow it
                         formatConversionError.printStackTrace();
                     }
+                    System.out.println("after filepath: " + inputFilePath);
+
                     boolean sic = sicCheckBox.isSelected();
                     boolean CCV_CCB = CCV_CCBCheckBox.isSelected();
                     boolean overRange = overRangeCheckBox.isSelected();
@@ -178,12 +184,15 @@ public class ICP2_ICP3Page extends JFrame {
                         case JOptionPane.NO_OPTION:     // Export Report
                             if (outputFilePath == null) {
                                 JOptionPane.showMessageDialog(frame, "Please select output path");
+                                break;
                             } else {
                                 com.secondeye.ICP2_ICP3_DataParse.parseData(inputFilePath);
                                 com.secondeye.ICP2_ICP3_DataParse.reviewData(outputFilePath,
-                                true, sic, CCV_CCB, overRange, negative, internalSTD);
+                                    true, sic, CCV_CCB, overRange, negative, internalSTD);
+                                JOptionPane.showMessageDialog(frame, "Report exported to " + outputFilePath,
+                                    "Export Successful", JOptionPane.INFORMATION_MESSAGE);
+                                break;
                             }
-                            break;
                         case JOptionPane.CANCEL_OPTION: // Cancel
                             break;
                     }                    
